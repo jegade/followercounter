@@ -186,6 +186,10 @@ void loop() {
     Serial.println(response.followedByCount);
     
     String instacount = String(response.followedByCount);
+
+
+    clr();
+    refreshAll();
   
     String insta2 = " " + String(instacount) ;
     Serial.println(insta2);
