@@ -26,8 +26,8 @@
 #include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>  
 
-const long interval = 60000; 
-unsigned long previousMillis = 0; 
+const long interval = 600*1000; 
+unsigned long previousMillis = millis() - 580*1000; 
 
 WiFiClientSecure client;
 
@@ -110,7 +110,11 @@ void setup()
  
   initMAX7219();
   sendCmdAll(CMD_SHUTDOWN,1);
-  sendCmdAll(CMD_INTENSITY,0);
+  sendCmdAll(CMD_INTENSITY,255);
+   
+  printStringWithShift("Es geht los ...",200);
+
+  
   Serial.print("Connecting WiFi ");
 
   
@@ -124,8 +128,8 @@ void setup()
 
 
 
-// Uncomment and run it once, if you want to erase all the stored information
-  wifiManager.resetSettings();
+   // Uncomment and run it once, if you want to erase all the stored information
+  //wifiManager.resetSettings();
 
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);

@@ -108,7 +108,7 @@ void initMAX7219()
   sendCmdAll(CMD_DISPLAYTEST, 0);
   sendCmdAll(CMD_SCANLIMIT, 7);
   sendCmdAll(CMD_DECODEMODE, 0);
-  sendCmdAll(CMD_INTENSITY, 1);
+  sendCmdAll(CMD_INTENSITY, 63);
   sendCmdAll(CMD_SHUTDOWN, 0);
   clr();
   refreshAll();
