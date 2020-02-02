@@ -1,10 +1,5 @@
 
 /*
-  ESP-01 pinout:
-
-  GPIO 2 - DataIn
-  GPIO 1 - LOAD/CS
-  GPIO 0 - CLK
 
   ------------------------
   NodeMCU 1.0 pinout:
@@ -37,15 +32,13 @@ InstagramStats instaStats(client);
 #define NUM_MAX 4
 #define ROTATE 90
 
-// for ESP-01 module
-//#define DIN_PIN 2 // D4
-//#define CS_PIN  3 // D9/RX
-//#define CLK_PIN 0 // D3
 
 // for NodeMCU 1.0
 #define DIN_PIN 15  // D8
 #define CS_PIN  13 // D7
 #define CLK_PIN 12  // D6
+
+#define TRIGGER_PIN 0 // D3
 
 #include "max7219.h"
 #include "fonts.h"
@@ -53,6 +46,7 @@ InstagramStats instaStats(client);
 
 //define your default values here, if there are different values in config.json, they are overwritten.
 char instagramName[40];
+char matrixIntensity[5];
 
 // =======================================================================
 
@@ -66,19 +60,24 @@ void saveConfigCallback () {
 }
 
 
-void setup() 
-{
+void setup() {
+
+  // Serial debugging
   Serial.begin(115200);
-  
+
+  // Required for instagram api
   client.setInsecure();
 
-//read configuration from FS json
   Serial.println("mounting FS...");
-//  SPIFFS.begin (true);
 
+  // Set Reset-Pin to Input Mode
+  pinMode(TRIGGER_PIN, INPUT);
+  
 
 
   if (SPIFFS.begin()) {
+
+ 
     
     Serial.println("mounted file system");
     if (SPIFFS.exists("/config.json")) {
@@ -98,8 +97,7 @@ void setup()
        
           Serial.println("\nparsed json");
           strcpy(instagramName, json["instagramName"]);
-
-       
+          strcpy(matrixIntensity, json["matrixIntensity"]);
       }
     }
   } else {
@@ -107,47 +105,48 @@ void setup()
   }
   //end read
 
- 
-  initMAX7219();
-  sendCmdAll(CMD_SHUTDOWN,1);
-  sendCmdAll(CMD_INTENSITY,255);
-   
-  printStringWithShift("Es geht los ...",200);
-
-  
-  Serial.print("Connecting WiFi ");
-
-  
-
-  // The extra parameters to be configured (can be either global or just in the setup)
-  // After connecting, parameter.getValue() will get you the configured value
-  // id/name placeholder/prompt default length
-  WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
-
   WiFiManager wifiManager;
 
+  // Requesting Instagram and Intensity for Display
+  WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
+  WiFiManagerParameter custom_intensity("Helligkeit", "1-255", matrixIntensity, 5);
+  WiFiManagerParameter custom_text("<p>Bitte die WLAN-Daten und den Instagram-Namen eingeben</p>");
+  
+  // Add params to wifiManager
+  wifiManager.addParameter(&custom_text);
+  wifiManager.addParameter(&custom_instagram);
+  wifiManager.addParameter(&custom_intensity);
 
+  
+  initMAX7219();
+  sendCmdAll(CMD_SHUTDOWN,1);
 
-   // Uncomment and run it once, if you want to erase all the stored information
-  //wifiManager.resetSettings();
+   
+  printStringWithShift("     Config",200);
+  
+  Serial.print("Connecting WiFi ");
 
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
-  //add all your parameters here
-  wifiManager.addParameter(&custom_instagram);
+  Serial.println("Running WifiManager");
   
-  wifiManager.autoConnect("Counter");
+  wifiManager.autoConnect("FollowerCounter");
   Serial.println("connected...yeey :)");
 
   //read updated parameters
   strcpy(instagramName, custom_instagram.getValue());
+  strcpy(matrixIntensity, custom_intensity.getValue());
+
+  String matrixIntensityString = matrixIntensity;
+  sendCmdAll(CMD_INTENSITY,matrixIntensityString.toInt());
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
     Serial.println("saving config");
     DynamicJsonDocument json(1024);
     json["instagramName"] = instagramName;
+    json["matrixIntensity"] = matrixIntensity;
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
       Serial.println("failed to open config file for writing");
@@ -169,6 +168,8 @@ void setup()
   
   //WiFi.disconnect(true); //erases store credentially
   Serial.println("Done");
+  printStringWithShift("      Starte ",200);
+
 
 
 }
@@ -176,6 +177,21 @@ void setup()
 
 //  
 void loop() {
+
+  int resetButton = digitalRead(TRIGGER_PIN);
+   
+  if ( resetButton == LOW ) {
+
+    Serial.println("Resetting wifi");
+     
+    printStringWithShift("    Reset",200);
+
+    WiFiManager wifiManager;
+    wifiManager.resetSettings();
+    SPIFFS.format();
+    
+    ESP.reset();
+  }
 
   unsigned long currentMillis = millis();
 
