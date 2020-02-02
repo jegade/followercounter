@@ -211,7 +211,7 @@ void loop() {
     clr();
     refreshAll();
   
-    String insta2 = " " + String(instacount) ;
+    String insta2 = "$% " + String(instacount) ;
     Serial.println(insta2);
     printStringWithShift(insta2.c_str(),200);
 
@@ -296,7 +296,14 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
   if (c < ' ' || c > MAX_CHAR) return;
   c -= 32;
   int w = showChar(c, font);
-  for (int i=0; i<w+1; i++) {
+
+  // Insta-Char-Hack
+  int offset=1;
+  if (c == 4 || c == 5 ) {
+    offset = 0;
+ }
+  
+  for (int i=0; i<w+offset; i++) {
     delay(shiftDelay);
     scrollLeft();
     refreshAll();
