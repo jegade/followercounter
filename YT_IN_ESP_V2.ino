@@ -168,7 +168,7 @@ void setup() {
   
   //WiFi.disconnect(true); //erases store credentially
   Serial.println("Done");
-  printStringWithShift("      Starte ",200);
+  printStringWithShift("      Starte ",100);
 
 
 
@@ -184,7 +184,7 @@ void loop() {
 
     Serial.println("Resetting wifi");
      
-    printStringWithShift("    Reset",200);
+    printStringWithShift("    Reset",100);
 
     WiFiManager wifiManager;
     wifiManager.resetSettings();
@@ -199,7 +199,6 @@ void loop() {
     
     previousMillis = currentMillis;
   
-    Serial.print("Getting Social Media Stats for ");
     Serial.println(instagramName);
     InstagramUserStats response = instaStats.getUserStats(instagramName);
     Serial.print("Number of followers: ");
@@ -213,7 +212,7 @@ void loop() {
   
     String insta2 = "$% " + String(instacount) ;
     Serial.println(insta2);
-    printStringWithShift(insta2.c_str(),200);
+    printStringWithShift(insta2.c_str(),100);
 
   }
 
