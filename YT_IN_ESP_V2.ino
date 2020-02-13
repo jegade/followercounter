@@ -21,15 +21,16 @@
 #include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>  
 
-const long interval = 600*1000; 
-unsigned long previousMillis = millis() - 580*1000; 
+const long interval = 3000*1000;  // alle 30 Minuten prüfen
+unsigned long previousMillis = millis() - 2980*1000; 
 
 WiFiClientSecure client;
 
 InstagramStats instaStats(client);
 
+int follower;
+int modules = 4;
 
-#define NUM_MAX 4
 #define ROTATE 90
 
 
@@ -39,6 +40,7 @@ InstagramStats instaStats(client);
 #define CLK_PIN 12  // D6
 
 #define TRIGGER_PIN 0 // D3
+#define TOGGLE_PIN 4 // D2
 
 #include "max7219.h"
 #include "fonts.h"
@@ -47,6 +49,7 @@ InstagramStats instaStats(client);
 //define your default values here, if there are different values in config.json, they are overwritten.
 char instagramName[40];
 char matrixIntensity[5];
+char maxModules[5];
 
 // =======================================================================
 
@@ -72,8 +75,8 @@ void setup() {
 
   // Set Reset-Pin to Input Mode
   pinMode(TRIGGER_PIN, INPUT);
+  pinMode(TOGGLE_PIN, INPUT);
   
-
 
   if (SPIFFS.begin()) {
 
@@ -98,7 +101,10 @@ void setup() {
           Serial.println("\nparsed json");
           strcpy(instagramName, json["instagramName"]);
           strcpy(matrixIntensity, json["matrixIntensity"]);
+          strcpy(maxModules, json["maxModules"]);
       }
+    } else {
+      
     }
   } else {
     Serial.println("failed to mount FS");
@@ -109,13 +115,13 @@ void setup() {
 
   // Requesting Instagram and Intensity for Display
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
-  WiFiManagerParameter custom_intensity("Helligkeit", "1-255", matrixIntensity, 5);
-  WiFiManagerParameter custom_text("<p>Bitte die WLAN-Daten und den Instagram-Namen eingeben</p>");
+  WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 1-255", matrixIntensity, 5);
+  WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
   
   // Add params to wifiManager
-  wifiManager.addParameter(&custom_text);
   wifiManager.addParameter(&custom_instagram);
   wifiManager.addParameter(&custom_intensity);
+  wifiManager.addParameter(&custom_modules);
 
   
   initMAX7219();
@@ -137,6 +143,9 @@ void setup() {
   //read updated parameters
   strcpy(instagramName, custom_instagram.getValue());
   strcpy(matrixIntensity, custom_intensity.getValue());
+  strcpy(maxModules,custom_modules.getValue());
+
+  // modules = String(maxModules).toInt();
 
   String matrixIntensityString = matrixIntensity;
   sendCmdAll(CMD_INTENSITY,matrixIntensityString.toInt());
@@ -147,6 +156,8 @@ void setup() {
     DynamicJsonDocument json(1024);
     json["instagramName"] = instagramName;
     json["matrixIntensity"] = matrixIntensity;
+    json["maxModules"] = maxModules;
+    
     File configFile = SPIFFS.open("/config.json", "w");
     if (!configFile) {
       Serial.println("failed to open config file for writing");
@@ -163,15 +174,8 @@ void setup() {
   Serial.println(" ");
   Serial.print("Instagram: ");
   Serial.print(instagramName);
-  Serial.println(" ");
-  Serial.println("Getting data ...");
   
-  //WiFi.disconnect(true); //erases store credentially
-  Serial.println("Done");
-  printStringWithShift("      Starte ",100);
-
-
-
+  printStringWithShift("      Starte ",200);
 }
 
 
@@ -179,19 +183,45 @@ void setup() {
 void loop() {
 
   int resetButton = digitalRead(TRIGGER_PIN);
+  int toggleButton = digitalRead(TOGGLE_PIN);
+
+  if ( toggleButton == LOW ) {
+
+      Serial.println("Toggle Info ...");
+      Serial.println(WiFi.status());
+
+      if (WiFi.status() ==  WL_CONNECTED ) {
+
+          // WLAN Ok
+          printStringWithShift(" WLAN OK",100);
+          delay(500);
+          printCurrentFollower();
+
+      } else {
+
+          // Wlan Probleme
+          printStringWithShift(" WLAN ERR",100);
+          delay(1000);
+          printCurrentFollower();  
+      }
+  }
    
   if ( resetButton == LOW ) {
 
-    Serial.println("Resetting wifi");
-     
+    Serial.println("Format System");
     printStringWithShift("    Reset",100);
-
+    
+    // Reset Wifi-Setting
     WiFiManager wifiManager;
     wifiManager.resetSettings();
-    SPIFFS.format();
     
+    // Format Flash
+    SPIFFS.format();
+
+    // Restart
     ESP.reset();
   }
+
 
   unsigned long currentMillis = millis();
 
@@ -200,23 +230,33 @@ void loop() {
     previousMillis = currentMillis;
   
     Serial.println(instagramName);
+
     InstagramUserStats response = instaStats.getUserStats(instagramName);
     Serial.print("Number of followers: ");
     Serial.println(response.followedByCount);
-    
-    String instacount = String(response.followedByCount);
 
+    int currentCount = response.followedByCount;
+
+    if (currentCount > 0 ) {
+        follower = currentCount;
+    }
+    
+    printCurrentFollower();
+  }
+
+}
+
+void printCurrentFollower() {
+
+     String instacount = String(follower);
 
     clr();
     refreshAll();
   
-    String insta2 = "$% " + String(instacount) ;
-    Serial.println(insta2);
-    printStringWithShift(insta2.c_str(),100);
-
-  }
-
+    String insta2 = "$% " + instacount ;
+    printStringWithShift(insta2.c_str(),200);
 }
+
 // =======================================================================
 
 int showChar(char ch, const uint8_t *data)
@@ -224,8 +264,8 @@ int showChar(char ch, const uint8_t *data)
   int len = pgm_read_byte(data);
   int i,w = pgm_read_byte(data + 1 + ch * len);
   for (i = 0; i < w; i++)
-    scr[NUM_MAX*8 + i] = pgm_read_byte(data + 1 + ch * len + 1 + i);
-  scr[NUM_MAX*8 + i] = 0;
+    scr[modules*8 + i] = pgm_read_byte(data + 1 + ch * len + 1 + i);
+  scr[modules*8 + i] = 0;
   return w;
 }
 

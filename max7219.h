@@ -16,12 +16,14 @@
 #define CMD_SHUTDOWN    12
 #define CMD_DISPLAYTEST 15
 
-byte scr[NUM_MAX*8 + 8]; // +8 for scrolled char
+
+
+byte scr[8*8 + 8]; // +8 for scrolled char
 
 void sendCmdAll(byte cmd, byte data)
 {
   digitalWrite(CS_PIN, LOW);
-  for (int i = NUM_MAX-1; i>=0; i--) {
+  for (int i = modules-1; i>=0; i--) {
     shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, cmd);
     shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, data);
   }
@@ -33,7 +35,7 @@ void refreshAllRot270()
   byte mask = 0x01;
   for (int c = 0; c < 8; c++) {
     digitalWrite(CS_PIN, LOW);
-    for(int i=NUM_MAX-1; i>=0; i--) {
+    for(int i=modules-1; i>=0; i--) {
       byte bt = 0;
       for(int b=0; b<8; b++) {
         bt<<=1;
@@ -52,7 +54,7 @@ void refreshAllRot90()
   byte mask = 0x80;
   for (int c = 0; c < 8; c++) {
     digitalWrite(CS_PIN, LOW);
-    for(int i=NUM_MAX-1; i>=0; i--) {
+    for(int i=modules-1; i>=0; i--) {
       byte bt = 0;
       for(int b=0; b<8; b++) {
         bt>>=1;
@@ -75,7 +77,7 @@ void refreshAll() {
 #else
   for (int c = 0; c < 8; c++) {
     digitalWrite(CS_PIN, LOW);
-    for(int i=NUM_MAX-1; i>=0; i--) {
+    for(int i=modules-1; i>=0; i--) {
       shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, CMD_DIGIT0 + c);
       shiftOut(DIN_PIN, CLK_PIN, MSBFIRST, scr[i * 8 + c]);
     }
@@ -86,17 +88,17 @@ void refreshAll() {
 
 void clr()
 {
-  for (int i = 0; i < NUM_MAX*8; i++) scr[i] = 0;
+  for (int i = 0; i < modules*8; i++) scr[i] = 0;
 }
 
 void scrollLeft()
 {
-  for(int i=0; i < NUM_MAX*8+7; i++) scr[i] = scr[i+1];
+  for(int i=0; i < modules*8+7; i++) scr[i] = scr[i+1];
 }
 
 void invert()
 {
-  for (int i = 0; i < NUM_MAX*8; i++) scr[i] = ~scr[i];
+  for (int i = 0; i < modules*8; i++) scr[i] = ~scr[i];
 }
 
 void initMAX7219()
