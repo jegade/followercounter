@@ -15,6 +15,10 @@
 #include "InstagramStats.h"        // https://github.com/witnessmenow/arduino-instagram-stats
 #include "JsonStreamingParser.h"
 
+#include <ESP8266HTTPClient.h>
+#include <ESP8266httpUpdate.h>
+
+
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 
 #include <DNSServer.h>            //Local DNS Server used for redirecting all requests to the configuration portal
@@ -23,6 +27,7 @@
 
 const long interval = 3000*1000;  // alle 30 Minuten prüfen
 unsigned long previousMillis = millis() - 2980*1000; 
+unsigned long lastPressed = millis();
 
 WiFiClientSecure client;
 
@@ -31,16 +36,21 @@ InstagramStats instaStats(client);
 int follower;
 int modules = 4;
 
-#define ROTATE 90
+// Variables will change:
+int buttonPushCounter = 0;   // counter for the number of button presses
+int buttonState = 1;         // current state of the button
+int lastButtonState = 1;     // previous state of the button
 
+#define ROTATE 90
+#define USE_SERIAL Serial
 
 // for NodeMCU 1.0
 #define DIN_PIN 15  // D8
 #define CS_PIN  13 // D7
 #define CLK_PIN 12  // D6
 
-#define TRIGGER_PIN 0 // D3
-#define TOGGLE_PIN 4 // D2
+
+#define TOGGLE_PIN 0 // D3
 
 #include "max7219.h"
 #include "fonts.h"
@@ -74,7 +84,6 @@ void setup() {
   Serial.println("mounting FS...");
 
   // Set Reset-Pin to Input Mode
-  pinMode(TRIGGER_PIN, INPUT);
   pinMode(TOGGLE_PIN, INPUT);
   
 
@@ -128,7 +137,7 @@ void setup() {
   sendCmdAll(CMD_SHUTDOWN,1);
 
    
-  printStringWithShift("     Config",200);
+  printStringWithShift("     Config",5);
   
   Serial.print("Connecting WiFi ");
 
@@ -169,47 +178,35 @@ void setup() {
     //end save
   }
 
-  Serial.print("local ip :");
-  Serial.println(WiFi.localIP());
-  Serial.println(" ");
-  Serial.print("Instagram: ");
-  Serial.print(instagramName);
+ 
   
-  printStringWithShift("      Starte ",200);
+  printStringWithShift("      Starte ",5);
 }
 
 
-//  
-void loop() {
+void infoWlan() {
 
-  int resetButton = digitalRead(TRIGGER_PIN);
-  int toggleButton = digitalRead(TOGGLE_PIN);
+  if (WiFi.status() ==  WL_CONNECTED ) {
 
-  if ( toggleButton == LOW ) {
+    // WLAN Ok
+    printStringWithShift(" WIFI OK",5);
 
-      Serial.println("Toggle Info ...");
-      Serial.println(WiFi.status());
+  } else {
 
-      if (WiFi.status() ==  WL_CONNECTED ) {
-
-          // WLAN Ok
-          printStringWithShift(" WLAN OK",100);
-          delay(500);
-          printCurrentFollower();
-
-      } else {
-
-          // Wlan Probleme
-          printStringWithShift(" WLAN ERR",100);
-          delay(1000);
-          printCurrentFollower();  
-      }
+    // Wlan Probleme
+    printStringWithShift(" WIFI ER",5);
   }
-   
-  if ( resetButton == LOW ) {
+}
 
-    Serial.println("Format System");
-    printStringWithShift("    Reset",100);
+void infoIP() {
+  String localIP = WiFi.localIP().toString();
+  printStringWithShift(localIP.c_str(),100);
+}
+
+void infoReset() {
+
+     Serial.println("Format System");
+    printStringWithShift("    Format",5);
     
     // Reset Wifi-Setting
     WiFiManager wifiManager;
@@ -220,10 +217,136 @@ void loop() {
 
     // Restart
     ESP.reset();
+  
+}
+
+void restartX() {
+   
+    printStringWithShift("    Restarte ...",5);
+    ESP.reset();
+}
+
+void update_started() {
+
+  printStringWithShift("    Update ...",5);
+  USE_SERIAL.println("CALLBACK:  HTTP update process started");
+}
+
+void update_finished() {
+  printStringWithShift("    Done ...",5);
+  USE_SERIAL.println("CALLBACK:  HTTP update process finished");
+}
+
+void update_progress(int cur, int total) {
+  printStringWithShift( cur + " of " + total,5);
+  USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
+}
+
+void update_error(int err) {
+  printStringWithShift( " Err " + err,5);
+  USE_SERIAL.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
+}
+
+void updateFirmware() {
+
+     ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
+
+    // Add optional callback notifiers
+    ESPhttpUpdate.onStart(update_started);
+    ESPhttpUpdate.onEnd(update_finished);
+    ESPhttpUpdate.onProgress(update_progress);
+    ESPhttpUpdate.onError(update_error);
+
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, "http://server/file.bin");
+    // Or:
+    //t_httpUpdate_return ret = ESPhttpUpdate.update(client, "server", 80, "file.bin");
+
+    switch (ret) {
+      case HTTP_UPDATE_FAILED:
+        USE_SERIAL.printf("HTTP_UPDATE_FAILD Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        break;
+
+      case HTTP_UPDATE_NO_UPDATES:
+        USE_SERIAL.println("HTTP_UPDATE_NO_UPDATES");
+        break;
+
+      case HTTP_UPDATE_OK:
+        USE_SERIAL.println("HTTP_UPDATE_OK");
+        break;
+    }
+  }
+}
+
+//  
+void loop() {
+
+  buttonState = digitalRead(TOGGLE_PIN);
+  unsigned long currentMillis = millis();
+
+  if (buttonState != lastButtonState && currentMillis > lastPressed + 50 ) {
+    
+    // if the state has changed, increment the counter
+    if (buttonState == LOW) {
+      // if the current state is HIGH then the button went from off to on:
+      buttonPushCounter++;
+      lastPressed = currentMillis;
+      Serial.println("push");
+      printStringWithShift(".",5);
+      Serial.println(buttonPushCounter);
+    } else {
+      // if the current state is LOW then the button went from on to off:
+      Serial.println("off");
+    }
   }
 
+  // Warte 1sec nach dem letzten Tastendruck 
+  if (currentMillis > lastPressed + 1000) {
 
-  unsigned long currentMillis = millis();
+      if (buttonPushCounter > 0 ) {
+
+            Serial.print("number of button pushes: ");
+            Serial.println(buttonPushCounter);
+
+            switch (buttonPushCounter) {
+
+                case 1: 
+                  // Einmal gedrückt
+                  printCurrentFollower();
+                  break;
+                
+                case 2:
+                  // Zweimal gedrückt
+                  infoWlan();
+                  break;
+
+                case 3:
+                  infoIP();
+                break;
+
+                case 4:
+                  restartX();
+                break;
+
+                case 10:
+                  infoReset();
+                  break;
+
+                default:
+
+                  printStringWithShift("TO MANY",5);
+                  break;
+            }
+
+            
+
+      }
+
+      buttonPushCounter = 0;
+  }
+  
+  // save the current state as the last state, for next time through the loop
+  lastButtonState = buttonState;   
+
 
   if (currentMillis - previousMillis >= interval) {
     
@@ -254,7 +377,7 @@ void printCurrentFollower() {
     refreshAll();
   
     String insta2 = "$% " + instacount ;
-    printStringWithShift(insta2.c_str(),200);
+    printStringWithShift(insta2.c_str(),5);
 }
 
 // =======================================================================

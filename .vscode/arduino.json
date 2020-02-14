@@ -1,0 +1,4 @@
+{
+    "port": "/dev/ttyUSB0",
+    "programmer": "ArduinoISP"
+}
