@@ -238,12 +238,16 @@ void update_finished() {
 }
 
 void update_progress(int cur, int total) {
-  printStringWithShift( cur + " of " + total,5);
+  char progressString[10];
+  sprintf(progressString, "%d of %d", cur, total);
+  printStringWithShift( progressString,5);
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
 void update_error(int err) {
-  printStringWithShift( " Err " + err,5);
+  char errorString[8];
+  sprintf(errorString, "Err %d", err);
+  printStringWithShift( errorString,5);
   USE_SERIAL.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
 }
 
@@ -257,9 +261,8 @@ void updateFirmware() {
     ESPhttpUpdate.onProgress(update_progress);
     ESPhttpUpdate.onError(update_error);
 
-    t_httpUpdate_return ret = ESPhttpUpdate.update(client, "http://server/file.bin");
-    // Or:
-    //t_httpUpdate_return ret = ESPhttpUpdate.update(client, "server", 80, "file.bin");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, "https://counter.buuild.it/static/themes/counter/followercounter.ino.d1.bin");
+   
 
     switch (ret) {
       case HTTP_UPDATE_FAILED:
@@ -274,7 +277,7 @@ void updateFirmware() {
         USE_SERIAL.println("HTTP_UPDATE_OK");
         break;
     }
-  }
+
 }
 
 //  
@@ -325,6 +328,10 @@ void loop() {
 
                 case 4:
                   restartX();
+                break;
+
+                case 7:
+                  updateFirmware();
                 break;
 
                 case 10:
