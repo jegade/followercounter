@@ -41,6 +41,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
+#define VERSION "1.1"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -203,6 +204,13 @@ void infoIP() {
   printStringWithShift(localIP.c_str(),100);
 }
 
+void infoVersion() {
+  char versionString[8];
+  sprintf(versionString,"Ver. %s", VERSION);
+  printStringWithShift(versionString,100);
+}
+
+
 void infoReset() {
 
      Serial.println("Format System");
@@ -228,26 +236,26 @@ void restartX() {
 
 void update_started() {
 
-  printStringWithShift("    Update ...",5);
+  printStringWithShift(" Update ...",50);
   USE_SERIAL.println("CALLBACK:  HTTP update process started");
 }
 
 void update_finished() {
-  printStringWithShift("    Done ...",5);
+  printStringWithShift(" Done ...",50);
   USE_SERIAL.println("CALLBACK:  HTTP update process finished");
 }
 
 void update_progress(int cur, int total) {
   char progressString[10];
-  sprintf(progressString, "%d of %d", cur, total);
-  printStringWithShift( progressString,5);
+  sprintf(progressString, "%d", cur);
+  printStringWithShift( progressString,0);
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
 void update_error(int err) {
   char errorString[8];
   sprintf(errorString, "Err %d", err);
-  printStringWithShift( errorString,5);
+  printStringWithShift( errorString,50);
   USE_SERIAL.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
 }
 
@@ -327,6 +335,10 @@ void loop() {
                 break;
 
                 case 4:
+                  infoVersion();
+                break;
+
+                case 5:
                   restartX();
                 break;
 
