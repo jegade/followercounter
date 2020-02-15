@@ -25,7 +25,7 @@
 #include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>  
 
-const long interval = 3000*1000;  // alle 30 Minuten prüfen
+const long interval = 3000*1000;  // alle 60 Minuten prüfen
 unsigned long previousMillis = millis() - 2980*1000; 
 unsigned long lastPressed = millis();
 
@@ -41,7 +41,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.1"
+#define VERSION "1.3"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -49,7 +49,6 @@ int lastButtonState = 1;     // previous state of the button
 #define DIN_PIN 15  // D8
 #define CS_PIN  13 // D7
 #define CLK_PIN 12  // D6
-
 
 #define TOGGLE_PIN 0 // D3
 
@@ -247,8 +246,9 @@ void update_finished() {
 
 void update_progress(int cur, int total) {
   char progressString[10];
-  sprintf(progressString, "%d", cur);
-  printStringWithShift( progressString,0);
+  float percent = ((float)cur   / (float)total )  * 100;
+  sprintf(progressString, " ... %s ",  String(percent).c_str()  );
+  printStringWithShift( progressString,50);
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
@@ -394,9 +394,17 @@ void printCurrentFollower() {
 
     clr();
     refreshAll();
+
+    if ( follower > 9999 ) {
+
+        String insta2 = instacount ;
+        printStringWithShift(insta2.c_str(),5);
+    
+    } else {
   
-    String insta2 = "$% " + instacount ;
-    printStringWithShift(insta2.c_str(),5);
+      String insta2 = "$% " + instacount ;
+      printStringWithShift(insta2.c_str(),5);
+    }
 }
 
 // =======================================================================
