@@ -1,29 +1,20 @@
 
-/*
-
-  ------------------------
-  NodeMCU 1.0 pinout:
-
-  D8 - DataIn
-  D7 - LOAD/CS
-  D6 - CLK
-*/
 
 #include <FS.h>                    //this needs to be first, or it all crashes and burns...
 #include "Arduino.h"
 #include <ESP8266WiFi.h>
-#include "InstagramStats.h"        // https://github.com/witnessmenow/arduino-instagram-stats
-#include "JsonStreamingParser.h"
+#include "InstagramStats.h"        // InstagramStats              https://github.com/witnessmenow/arduino-instagram-stats
+#include "JsonStreamingParser.h"   // Json Streaming Parser  
 
-#include <ESP8266HTTPClient.h>
-#include <ESP8266httpUpdate.h>
+#include <ESP8266HTTPClient.h>     // Web Download
+#include <ESP8266httpUpdate.h>     // Web Updater
 
 
-#include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
+#include <ArduinoJson.h>          // ArduinoJSON                 https://github.com/bblanchon/ArduinoJson
 
-#include <DNSServer.h>            //Local DNS Server used for redirecting all requests to the configuration portal
-#include <ESP8266WebServer.h>     //Local WebServer used to serve the configuration portal
-#include <WiFiManager.h>  
+#include <DNSServer.h>            // - Local DNS Server used for redirecting all requests to the configuration portal
+#include <ESP8266WebServer.h>     // - Local WebServer used to serve the configuration portal
+#include <WiFiManager.h>          // WifiManager 
 
 const long interval = 3000*1000;  // alle 60 Minuten prüfen
 unsigned long previousMillis = millis() - 2980*1000; 
@@ -41,7 +32,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.4"
+#define VERSION "1.5"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -177,9 +168,7 @@ void setup() {
      configFile.close();
     //end save
   }
-
  
-  
   printStringWithShift("      Starte ",5);
 }
 
