@@ -41,7 +41,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.3"
+#define VERSION "1.4"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -124,7 +124,7 @@ void setup() {
 
   // Requesting Instagram and Intensity for Display
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
-  WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 1-255", matrixIntensity, 5);
+  WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 0-15", matrixIntensity, 5);
   WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
   
   // Add params to wifiManager
@@ -233,6 +233,15 @@ void restartX() {
     ESP.reset();
 }
 
+void showIntensity() {
+  for (int intensity = 0; intensity < 16; intensity++) {
+    char intensityString[8];
+    sprintf(intensityString, " Int %d", intensity);
+    sendCmdAll(CMD_INTENSITY,intensity);
+    printStringWithShift( intensityString,50);
+  }
+}
+
 void update_started() {
 
   printStringWithShift(" Update ...",50);
@@ -337,8 +346,12 @@ void loop() {
                 case 4:
                   infoVersion();
                 break;
-
+                
                 case 5:
+                  showIntensity();
+                break;
+                
+                case 6:
                   restartX();
                 break;
 
