@@ -2,7 +2,8 @@
 
 ## Einrichtung IDE 
 
-1. Download Arduino IDE https://www.arduino.cc/en/main/software
+1. Download und Arduino IDE https://www.arduino.cc/en/main/software
+   macOS erfordert zusätzlich die Installation von Python 3, das via Homebrew installiert werden kann¹
 2. Hinzufügen des ESP-Boards über die Voreinstellung Zusätzliche Boardverwalter-URLS 
   http://arduino.esp8266.com/stable/package_esp8266com_index.json
 3. Installieren der benötigten Bibliotheken über Werkzeuge -> Bibliotheken verwalten
@@ -14,6 +15,8 @@
 5. Download der letzten Version unter Release 
 6. FollowerCounter.ino in Arduino öffnen
 6. Sketch -> Hochladen, lädt die neue Firmware
+
+¹ https://brew.sh/index_de und ``brew install python3``
 
 ## Debugger / Fehlersuche
 
