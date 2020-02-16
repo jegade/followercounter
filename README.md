@@ -1,5 +1,24 @@
 # Instagram Follower Counter with esp8266
 
+## Einrichtung IDE 
+
+1. Download Arduino IDE https://www.arduino.cc/en/main/software
+2. Hinzufügen des ESP-Boards über die Voreinstellung Zusätzliche Boardverwalter-URLS 
+  http://arduino.esp8266.com/stable/package_esp8266com_index.json
+3. Installieren der benötigten Bibliotheken über Werkzeuge -> Bibliotheken verwalten
+   * InstagramStats
+   * Json Streaming Parser 
+   * ArduinoJSON
+   * WifiManager
+4. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
+5. Download der letzten Version unter Release 
+6. FollowerCounter.ino in Arduino öffnen
+6. Sketch -> Hochladen, lädt die neue Firmware
+
+## Debugger / Fehlersuche
+
+Unter Werkzeuge -> Serieller Monitor öffen. Die Baudrate auf 115200 stellen und einmal den kleinen Reset-Taster, direkt am Controller drücken. 
+
 ## Configure / Einrichtung
 
 1. Den ESP8266 mit dem Sketch flashen
