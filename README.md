@@ -58,4 +58,4 @@ Links to amazon.de
 ## Schaltplan // Schematic
 
 ![Schaltplan](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/schematic.png)
-![Wiring](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/wiring.jpg)
+![Wiring](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/wiring.png)
