@@ -6,6 +6,13 @@
 #include "InstagramStats.h"        // InstagramStats              https://github.com/witnessmenow/arduino-instagram-stats
 #include "JsonStreamingParser.h"   // Json Streaming Parser  
 
+#include <Adafruit_GFX.h>
+#include <Adafruit_NeoMatrix.h>
+#include <Adafruit_NeoPixel.h>
+#ifndef PSTR
+ #define PSTR // Make Arduino Due happy
+#endif
+
 #include <ESP8266HTTPClient.h>     // Web Download
 #include <ESP8266httpUpdate.h>     // Web Updater
 
@@ -41,10 +48,21 @@ int lastButtonState = 1;     // previous state of the button
 #define CS_PIN  13 // D7
 #define CLK_PIN 12  // D6
 
+#define MATRIX "ws" // ws or max 
+
 #define TOGGLE_PIN 0 // D3
 
 #include "max7219.h"
 #include "fonts.h"
+
+Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(32, 8, DIN_PIN,
+  NEO_MATRIX_TOP     + NEO_MATRIX_LEFT +
+  NEO_MATRIX_ROWS    + NEO_MATRIX_ZIGZAG,
+  NEO_GRB            + NEO_KHZ800);
+
+
+const uint16_t colors[] = {
+  matrix.Color(255, 0, 0), matrix.Color(0, 255, 0), matrix.Color(0, 0, 255) };
 
 
 //define your default values here, if there are different values in config.json, they are overwritten.
@@ -126,6 +144,11 @@ void setup() {
   
   initMAX7219();
   sendCmdAll(CMD_SHUTDOWN,1);
+
+   matrix.begin();
+  matrix.setTextWrap(false);
+  matrix.setBrightness(20);
+  matrix.setTextColor(colors[0]);
 
    
   printStringWithShift("     Config",5);
@@ -397,7 +420,7 @@ void printCurrentFollower() {
     clr();
     refreshAll();
 
-    if ( follower > 9999 ) {
+    if ( follower > 9999 || MATRIX == "ws" ) {
 
         String insta2 = instacount ;
         printStringWithShift(insta2.c_str(),5);
@@ -483,6 +506,10 @@ unsigned char convertPolish(unsigned char _c)
 // =======================================================================
 
 void printCharWithShift(unsigned char c, int shiftDelay) {
+
+
+ 
+  
   c = convertPolish(c);
   if (c < ' ' || c > MAX_CHAR) return;
   c -= 32;
@@ -504,8 +531,23 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
 // =======================================================================
 
 void printStringWithShift(const char* s, int shiftDelay){
-  while (*s) {
-    printCharWithShift(*s++, shiftDelay);
+
+  if (MATRIX == "ws") {
+
+    String out;
+    out = s;
+    
+    matrix.fillScreen(0);
+    matrix.setCursor(0, 0);
+    matrix.setTextColor(matrix.Color(0,136,255));
+    matrix.print(out);    
+    matrix.show();
+    
+  } else {
+  
+    while (*s) {
+      printCharWithShift(*s++, shiftDelay);
+    }
   }
 }
 
