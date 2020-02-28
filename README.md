@@ -53,9 +53,14 @@ Links to amazon.de
 * [D1 Mini NodeMCU Clone](https://amzn.to/31fsvza)
 * [Mini Breadboard](https://amzn.to/2OiJpYl)
 * [Dot Matrix Display](https://amzn.to/2tlg5co)
-* [Wires](https://amzn.to/2OhZrSb)
+* [Leitungen / Wires](https://amzn.to/2OhZrSb)
+* [Taster-Set](https://amzn.to/2V1nUPH)
+
+Alternative
+
+* [Set mit Breadboard, Leitungen und Tastern](https://amzn.to/2P5Xitb)
 
 ## Schaltplan // Schematic
 
 ![Schaltplan](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/schematic.png)
-![Wiring](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/wiring.jpg)
+![Wiring](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/wiring.png)
