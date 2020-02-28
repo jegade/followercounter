@@ -32,7 +32,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.5"
+#define VERSION "1.6"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -124,8 +124,11 @@ void setup() {
   wifiManager.addParameter(&custom_modules);
 
   
+  // Warte damit das Display initialisiert werden kannu
+  delay(1000);
+
   initMAX7219();
-  sendCmdAll(CMD_SHUTDOWN,1);
+  sendCmdAll(CMD_SHUTDOWN,1); 
 
    
   printStringWithShift("     Config",5);
