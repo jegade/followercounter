@@ -1,5 +1,6 @@
 
 
+
 #include <FS.h>                    //this needs to be first, or it all crashes and burns...
 #include "Arduino.h"
 #include <ESP8266WiFi.h>
@@ -16,6 +17,8 @@
 #include <ESP8266WebServer.h>     // - Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>          // WifiManager 
 
+
+
 const long interval = 3000*1000;  // alle 60 Minuten prüfen
 unsigned long previousMillis = millis() - 2980*1000; 
 unsigned long lastPressed = millis();
@@ -23,6 +26,8 @@ unsigned long lastPressed = millis();
 WiFiClientSecure client;
 
 InstagramStats instaStats(client);
+ESP8266WebServer server(80);
+
 
 int follower;
 int modules = 4;
@@ -32,7 +37,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.6"
+#define VERSION "1.7r1"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -45,6 +50,7 @@ int lastButtonState = 1;     // previous state of the button
 
 #include "max7219.h"
 #include "fonts.h"
+#include "index.h"
 
 
 //define your default values here, if there are different values in config.json, they are overwritten.
@@ -61,6 +67,39 @@ bool shouldSaveConfig = true;
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+}
+
+void handleRoot() {
+  server.send(200, "text/html", MAIN_page);
+}
+
+void redirectBack() {
+  server.sendHeader("Location", String("/"), true);
+  server.send ( 302, "text/plain", "");
+}
+
+
+void getIntensity() {
+
+  Serial.println("Set Intensity " + server.arg("intensity"));
+  String intensityString = server.arg("intensity");
+  sendCmdAll(CMD_INTENSITY,intensityString.toInt());
+  redirectBack();
+}
+
+void getReset() {
+  redirectBack();
+  restartX();
+}
+
+void getUpdate() {
+  redirectBack();
+  updateFirmware();
+}
+
+void getFormat() {
+  redirectBack();
+  infoReset();
 }
 
 
@@ -130,6 +169,7 @@ void setup() {
   initMAX7219();
   sendCmdAll(CMD_SHUTDOWN,1); 
 
+
    
   printStringWithShift("     Config",5);
   
@@ -143,7 +183,18 @@ void setup() {
   wifiManager.autoConnect("FollowerCounter");
   Serial.println("connected...yeey :)");
 
-  //read updated parameters
+
+  server.on("/", handleRoot);
+  server.on("/intensity", getIntensity);
+  server.on("/format", getFormat);
+  server.on("/update", getUpdate);
+  server.on("/reset", getReset);
+  server.begin();
+
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  //read updated parametersu
   strcpy(instagramName, custom_instagram.getValue());
   strcpy(matrixIntensity, custom_intensity.getValue());
   strcpy(maxModules,custom_modules.getValue());
@@ -292,6 +343,8 @@ void updateFirmware() {
 //  
 void loop() {
 
+  server.handleClient();
+
   buttonState = digitalRead(TOGGLE_PIN);
   unsigned long currentMillis = millis();
 
@@ -390,6 +443,10 @@ void loop() {
     
     printCurrentFollower();
   }
+
+  // webserver 
+
+
 
 }
 

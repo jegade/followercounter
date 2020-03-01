@@ -2,21 +2,24 @@
 # 1 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 
 
-# 4 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+
 # 5 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 6 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 7 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 8 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 
 
-# 10 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 11 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 12 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 
 
-# 14 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 15 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 
-# 16 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 17 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 18 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 19 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+
+
 
 const long interval = 3000*1000; // alle 60 Minuten prüfen
 unsigned long previousMillis = millis() - 2980*1000;
@@ -25,6 +28,8 @@ unsigned long lastPressed = millis();
 WiFiClientSecure client;
 
 InstagramStats instaStats(client);
+ESP8266WebServer server(80);
+
 
 int follower;
 int modules = 4;
@@ -45,8 +50,9 @@ int lastButtonState = 1; // previous state of the button
 
 
 
-# 47 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
-# 48 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 52 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 53 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 54 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 
 
 //define your default values here, if there are different values in config.json, they are overwritten.
@@ -63,6 +69,39 @@ bool shouldSaveConfig = true;
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+}
+
+void handleRoot() {
+  server.send(200, "text/html", MAIN_page);
+}
+
+void redirectBack() {
+  server.sendHeader("Location", String("/"), true);
+  server.send ( 302, "text/plain", "");
+}
+
+
+void getIntensity() {
+
+  Serial.println("Set Intensity " + server.arg("intensity"));
+  String intensityString = server.arg("intensity");
+  sendCmdAll(10,intensityString.toInt());
+  redirectBack();
+}
+
+void getReset() {
+  redirectBack();
+  restartX();
+}
+
+void getUpdate() {
+  redirectBack();
+  updateFirmware();
+}
+
+void getFormat() {
+  redirectBack();
+  infoReset();
 }
 
 
@@ -133,6 +172,7 @@ void setup() {
   sendCmdAll(12,1);
 
 
+
   printStringWithShift("     Config",5);
 
   Serial.print("Connecting WiFi ");
@@ -145,7 +185,18 @@ void setup() {
   wifiManager.autoConnect("FollowerCounter");
   Serial.println("connected...yeey :)");
 
-  //read updated parameters
+
+  server.on("/", handleRoot);
+  server.on("/intensity", getIntensity);
+  server.on("/format", getFormat);
+  server.on("/update", getUpdate);
+  server.on("/reset", getReset);
+  server.begin();
+
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  //read updated parametersu
   strcpy(instagramName, custom_instagram.getValue());
   strcpy(matrixIntensity, custom_intensity.getValue());
   strcpy(maxModules,custom_modules.getValue());
@@ -199,7 +250,7 @@ void infoIP() {
 
 void infoVersion() {
   char versionString[8];
-  sprintf(versionString,"Ver. %s", "1.6");
+  sprintf(versionString,"Ver. %s", "1.7r1");
   printStringWithShift(versionString,100);
 }
 
@@ -293,6 +344,8 @@ void updateFirmware() {
 
 //  
 void loop() {
+
+  server.handleClient();
 
   buttonState = digitalRead(0 /* D3*/);
   unsigned long currentMillis = millis();
@@ -392,6 +445,10 @@ void loop() {
 
     printCurrentFollower();
   }
+
+  // webserver 
+
+
 
 }
 

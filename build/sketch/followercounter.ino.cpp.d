@@ -144,4 +144,5 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WebServer/src/Parsing-impl.h \
  /home/jens/Arduino/libraries/WiFiManager/WiFiManager.h \
  /home/jens/Dropbox/ESP8266/followercounter/build/sketch/max7219.h \
- /home/jens/Dropbox/ESP8266/followercounter/build/sketch/fonts.h
+ /home/jens/Dropbox/ESP8266/followercounter/build/sketch/fonts.h \
+ /home/jens/Dropbox/ESP8266/followercounter/build/sketch/index.h
