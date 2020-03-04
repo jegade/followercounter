@@ -345,7 +345,7 @@ void updateFirmware() {
 //  
 void loop() {
 
-  server.handleClient();
+   server.handleClient();
 
   buttonState = digitalRead(0 /* D3*/);
   unsigned long currentMillis = millis();

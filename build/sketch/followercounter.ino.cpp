@@ -398,7 +398,7 @@ void updateFirmware() {
 //  
 void loop() {
 
-  server.handleClient();
+   server.handleClient();
 
   buttonState = digitalRead(TOGGLE_PIN);
   unsigned long currentMillis = millis();

@@ -28,6 +28,7 @@ WiFiClientSecure client;
 InstagramStats instaStats(client);
 ESP8266WebServer server(80);
 
+int textsize = 0;
 
 int follower;
 int modules = 4;
@@ -452,8 +453,8 @@ void loop() {
 
 void printCurrentFollower() {
 
-     String instacount = String(follower);
-
+    String instacount = String(follower);
+    textsize = 0;
     clr();
     refreshAll();
 
@@ -466,7 +467,20 @@ void printCurrentFollower() {
   
       String insta2 = "$% " + instacount ;
       printStringWithShift(insta2.c_str(),5);
+        for (int i=0; i<32-textsize; i++) {
+      
+            Serial.print("i >> ");
+            Serial.println(i);
+            Serial.print("textsize insta >> ");
+            Serial.println(textsize);
+            delay(10);
+            scrollLeft();
+            refreshAll();
+    
+        }
     }
+    
+    textsize = 0;
 }
 
 // =======================================================================
@@ -555,8 +569,12 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
  }
   
   for (int i=0; i<w+offset; i++) {
+      
     delay(shiftDelay);
     scrollLeft();
+    textsize++;
+    Serial.print("textsize Char >> ");
+    Serial.println(textsize);
     refreshAll();
   }
 }
@@ -567,6 +585,8 @@ void printStringWithShift(const char* s, int shiftDelay){
   while (*s) {
     printCharWithShift(*s++, shiftDelay);
   }
+          Serial.print("textsize Str >> ");
+          Serial.println(textsize);
 }
 
 // =======================================================================
