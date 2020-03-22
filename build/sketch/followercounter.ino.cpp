@@ -30,6 +30,7 @@ WiFiClientSecure client;
 InstagramStats instaStats(client);
 ESP8266WebServer server(80);
 
+int textsize = 0;
 
 int follower;
 int modules = 4;
@@ -39,7 +40,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.7r1"
+#define VERSION "1.8"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -66,59 +67,59 @@ char maxModules[5];
 bool shouldSaveConfig = true;
 
 //callback notifying us of the need to save config
-#line 67 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 68 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfigCallback();
-#line 72 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 73 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void handleRoot();
-#line 76 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 77 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void redirectBack();
-#line 82 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 83 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void getIntensity();
-#line 90 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 91 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void getReset();
-#line 95 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 96 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void getUpdate();
-#line 100 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 101 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void getFormat();
-#line 106 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 107 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void setup();
-#line 230 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 231 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoWlan();
-#line 244 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 245 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoIP();
-#line 249 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 250 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoVersion();
-#line 256 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 257 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoReset();
-#line 273 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 274 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void restartX();
-#line 279 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 280 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void showIntensity();
-#line 288 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 289 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_started();
-#line 294 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 295 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_finished();
-#line 299 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 300 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_progress(int cur, int total);
-#line 307 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 308 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_error(int err);
-#line 314 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 315 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void updateFirmware();
-#line 344 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 345 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void loop();
-#line 453 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 454 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printCurrentFollower();
-#line 474 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 488 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 int showChar(char ch, const uint8_t *data);
-#line 487 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 501 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 unsigned char convertPolish(unsigned char _c);
-#line 545 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 559 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printCharWithShift(unsigned char c, int shiftDelay);
-#line 566 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 582 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printStringWithShift(const char* s, int shiftDelay);
-#line 573 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 588 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 unsigned int convToInt(const char *txt);
-#line 67 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 68 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfigCallback () {
   Serial.println("Should save config");
   shouldSaveConfig = true;
@@ -398,7 +399,7 @@ void updateFirmware() {
 //  
 void loop() {
 
-   server.handleClient();
+  server.handleClient();
 
   buttonState = digitalRead(TOGGLE_PIN);
   unsigned long currentMillis = millis();
@@ -507,8 +508,8 @@ void loop() {
 
 void printCurrentFollower() {
 
-     String instacount = String(follower);
-
+    String instacount = String(follower);
+    textsize = 0;
     clr();
     refreshAll();
 
@@ -521,7 +522,20 @@ void printCurrentFollower() {
   
       String insta2 = "$% " + instacount ;
       printStringWithShift(insta2.c_str(),5);
+        for (int i=0; i<32-textsize; i++) {
+      
+            //Serial.print("i >> ");
+            //Serial.println(i);
+            //Serial.print("textsize insta >> ");
+            //Serial.println(textsize);
+            delay(10);
+            scrollLeft();
+            refreshAll();
+    
+        }
     }
+    
+    textsize = 0;
 }
 
 // =======================================================================
@@ -610,8 +624,10 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
  }
   
   for (int i=0; i<w+offset; i++) {
+      
     delay(shiftDelay);
     scrollLeft();
+    textsize++;
     refreshAll();
   }
 }
@@ -624,7 +640,6 @@ void printStringWithShift(const char* s, int shiftDelay){
   }
 }
 
-// =======================================================================
 unsigned int convToInt(const char *txt)
 {
   unsigned int val = 0;
@@ -632,7 +647,4 @@ unsigned int convToInt(const char *txt)
     if(isdigit(txt[i])) val=val*10+(txt[i]&0xf);
   return val;
 }
-// =======================================================================
-
-/////
 

@@ -5,7 +5,9 @@
             "includePath": [
                 "/home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WebServer/src",
                 "/home/jens/.arduino15/packages/esp8266/tools/**",
-                "/home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/**"
+                "/home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/**",
+                "C:\\Users\\Jens\\AppData\\Local\\Arduino15\\packages\\esp8266\\hardware\\esp8266\\2.6.3\\**",
+                "C:\\Users\\Jens\\AppData\\Local\\Arduino15\\packages\\esp8266\\tools\\**"
             ],
             "forcedInclude": [],
             "intelliSenseMode": "gcc-x64"

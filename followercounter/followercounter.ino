@@ -38,7 +38,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.7r1"
+#define VERSION "1.8"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -469,10 +469,10 @@ void printCurrentFollower() {
       printStringWithShift(insta2.c_str(),5);
         for (int i=0; i<32-textsize; i++) {
       
-            Serial.print("i >> ");
-            Serial.println(i);
-            Serial.print("textsize insta >> ");
-            Serial.println(textsize);
+            //Serial.print("i >> ");
+            //Serial.println(i);
+            //Serial.print("textsize insta >> ");
+            //Serial.println(textsize);
             delay(10);
             scrollLeft();
             refreshAll();
@@ -573,8 +573,6 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
     delay(shiftDelay);
     scrollLeft();
     textsize++;
-    Serial.print("textsize Char >> ");
-    Serial.println(textsize);
     refreshAll();
   }
 }
@@ -585,11 +583,8 @@ void printStringWithShift(const char* s, int shiftDelay){
   while (*s) {
     printCharWithShift(*s++, shiftDelay);
   }
-          Serial.print("textsize Str >> ");
-          Serial.println(textsize);
 }
 
-// =======================================================================
 unsigned int convToInt(const char *txt)
 {
   unsigned int val = 0;
@@ -597,6 +592,3 @@ unsigned int convToInt(const char *txt)
     if(isdigit(txt[i])) val=val*10+(txt[i]&0xf);
   return val;
 }
-// =======================================================================
-
-/////

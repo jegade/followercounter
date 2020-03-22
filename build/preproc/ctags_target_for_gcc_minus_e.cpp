@@ -30,6 +30,7 @@ WiFiClientSecure client;
 InstagramStats instaStats(client);
 ESP8266WebServer server(80);
 
+int textsize = 0;
 
 int follower;
 int modules = 4;
@@ -50,9 +51,9 @@ int lastButtonState = 1; // previous state of the button
 
 
 
-# 52 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 53 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 # 54 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
+# 55 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino" 2
 
 
 //define your default values here, if there are different values in config.json, they are overwritten.
@@ -250,7 +251,7 @@ void infoIP() {
 
 void infoVersion() {
   char versionString[8];
-  sprintf(versionString,"Ver. %s", "1.7r1");
+  sprintf(versionString,"Ver. %s", "1.8");
   printStringWithShift(versionString,100);
 }
 
@@ -345,7 +346,7 @@ void updateFirmware() {
 //  
 void loop() {
 
-   server.handleClient();
+  server.handleClient();
 
   buttonState = digitalRead(0 /* D3*/);
   unsigned long currentMillis = millis();
@@ -454,8 +455,8 @@ void loop() {
 
 void printCurrentFollower() {
 
-     String instacount = String(follower);
-
+    String instacount = String(follower);
+    textsize = 0;
     clr();
     refreshAll();
 
@@ -468,7 +469,20 @@ void printCurrentFollower() {
 
       String insta2 = "$% " + instacount ;
       printStringWithShift(insta2.c_str(),5);
+        for (int i=0; i<32-textsize; i++) {
+
+            //Serial.print("i >> ");
+            //Serial.println(i);
+            //Serial.print("textsize insta >> ");
+            //Serial.println(textsize);
+            delay(10);
+            scrollLeft();
+            refreshAll();
+
+        }
     }
+
+    textsize = 0;
 }
 
 // =======================================================================
@@ -557,8 +571,10 @@ void printCharWithShift(unsigned char c, int shiftDelay) {
  }
 
   for (int i=0; i<w+offset; i++) {
+
     delay(shiftDelay);
     scrollLeft();
+    textsize++;
     refreshAll();
   }
 }
@@ -571,7 +587,6 @@ void printStringWithShift(const char* s, int shiftDelay){
   }
 }
 
-// =======================================================================
 unsigned int convToInt(const char *txt)
 {
   unsigned int val = 0;
@@ -579,6 +594,3 @@ unsigned int convToInt(const char *txt)
     if(isdigit(txt[i])) val=val*10+(txt[i]&0xf);
   return val;
 }
-// =======================================================================
-
-/////
