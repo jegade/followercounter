@@ -1,5 +1,17 @@
 # Instagram Follower Counter with esp8266
 
+## Letzte Änderungen / Changelog
+
+### 1.8 
+
+  * Linksbündige Positionierung des Logos, damit man das Element austauschen kann (von @drkuebel)
+    
+### 1.7
+ 
+ * Webinterface für die Konfiguration der Helligkeit, Start des Updates und Reset
+ * Besseres Startverhalten
+
+
 ## Einrichtung IDE 
 
 1. Download und Arduino IDE https://www.arduino.cc/en/main/software
