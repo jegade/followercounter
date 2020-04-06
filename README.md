@@ -18,15 +18,16 @@
    macOS erfordert zusätzlich die Installation von Python 3, das via Homebrew installiert werden kann¹
 2. Hinzufügen des ESP-Boards über die Voreinstellung Zusätzliche Boardverwalter-URLS 
   http://arduino.esp8266.com/stable/package_esp8266com_index.json
-3. Installieren der benötigten Bibliotheken über Werkzeuge -> Bibliotheken verwalten
+3. Installieren des ESP8266-Board über die Boardverwaltung  
+4. Installieren der benötigten Bibliotheken über Werkzeuge -> Bibliotheken verwalten
    * InstagramStats
    * Json Streaming Parser 
    * ArduinoJSON
    * WifiManager
-4. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
-5. Download der letzten Version unter Release 
-6. FollowerCounter.ino in Arduino öffnen
-6. Sketch -> Hochladen, lädt die neue Firmware
+5. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
+6. Download der letzten Version unter Release 
+7. FollowerCounter.ino in Arduino öffnen
+8. Sketch -> Hochladen, lädt die neue Firmware
 
 ¹ https://brew.sh/index_de und ``brew install python3``
 
