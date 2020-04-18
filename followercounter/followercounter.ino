@@ -10,12 +10,17 @@
 #include <ESP8266HTTPClient.h>     // Web Download
 #include <ESP8266httpUpdate.h>     // Web Updater
 
-
 #include <ArduinoJson.h>          // ArduinoJSON                 https://github.com/bblanchon/ArduinoJson
 
 #include <DNSServer.h>            // - Local DNS Server used for redirecting all requests to the configuration portal
 #include <ESP8266WebServer.h>     // - Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>          // WifiManager 
+
+
+#include <NTPClient.h>
+#include <time.h>
+
+
 
 
 
@@ -28,17 +33,23 @@ WiFiClientSecure client;
 InstagramStats instaStats(client);
 ESP8266WebServer server(80);
 
+char time_value[20];
+
+
 int textsize = 0;
 
 int follower;
 int modules = 4;
+
+int mode = 1;
+int modetoggle = 0;
 
 // Variables will change:
 int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.8"
+#define VERSION "1.9rc1"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -170,7 +181,8 @@ void setup() {
   initMAX7219();
   sendCmdAll(CMD_SHUTDOWN,1); 
 
-
+ configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+  setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 0);  // https://github.com/nayarsystems/posix_tz_db 
    
   printStringWithShift("     Config",5);
   
@@ -301,7 +313,7 @@ void update_progress(int cur, int total) {
   char progressString[10];
   float percent = ((float)cur   / (float)total )  * 100;
   sprintf(progressString, " ... %s ",  String(percent).c_str()  );
-  printStringWithShift( progressString,50);
+  printStringWithShift( progressString,10);
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
@@ -349,6 +361,16 @@ void loop() {
   buttonState = digitalRead(TOGGLE_PIN);
   unsigned long currentMillis = millis();
 
+
+
+  if (currentMillis % 2000 == 0 ) { 
+  
+  
+   
+    //helloFullScreenPartialMode(timeString);
+ 
+  }
+
   if (buttonState != lastButtonState && currentMillis > lastPressed + 50 ) {
     
     // if the state has changed, increment the counter
@@ -376,33 +398,38 @@ void loop() {
             switch (buttonPushCounter) {
 
                 case 1: 
-                  // Einmal gedrückt
-                  printCurrentFollower();
+                  // Einmal gedrückt / FollowerCounter-Modus
+                  mode = 1;
                   break;
                 
                 case 2:
-                  // Zweimal gedrückt
-                  infoWlan();
+                  // Zweimal gedrückt / Uhrzeit-Modus
+                  mode = 2;
                   break;
 
                 case 3:
+                  // Dreimal gedrückt / Wechselmodus
+                  mode = 3;
+                  break;
+
+                case 4:
+                  infoWlan();
+                  break;
+
+                case 5:
                   infoIP();
                 break;
 
-                case 4:
+                case 6:
                   infoVersion();
                 break;
                 
-                case 5:
-                  showIntensity();
-                break;
-                
-                case 6:
-                  restartX();
-                break;
-
                 case 7:
                   updateFirmware();
+                break;
+
+                case 8:
+                  restartX();
                 break;
 
                 case 10:
@@ -426,10 +453,10 @@ void loop() {
   lastButtonState = buttonState;   
 
 
+  // Update follower count
   if (currentMillis - previousMillis >= interval) {
     
     previousMillis = currentMillis;
-  
     Serial.println(instagramName);
 
     InstagramUserStats response = instaStats.getUserStats(instagramName);
@@ -442,13 +469,58 @@ void loop() {
         follower = currentCount;
     }
     
-    printCurrentFollower();
+   
   }
 
-  // webserver 
+  if ( currentMillis % 10000 == 0  ) {
 
+      switch (mode)
+      {
+      case 1:
+        /* code */
+        printCurrentFollower();
+        break;
+      
+      case 2:
+        /* code */
+        printTime();
+        break;
+      
+      case 3:
 
+        if ( modetoggle == 1 ) {
 
+          modetoggle = 0;
+          printTime();
+
+        } else {
+
+          printCurrentFollower();
+          modetoggle = 1;
+        }
+
+        break;
+
+      default:
+        break;
+      }
+
+  }
+}
+
+void printTime() {
+
+  time_t now = time(nullptr);
+  String time = String(ctime(&now));
+  time.trim();
+  time.substring(11,16).toCharArray(time_value, 10); 
+  
+  textsize = 0;
+  clr();
+  refreshAll();
+
+  //Serial.println(time_value);
+  printStringWithShift(time_value,5);
 }
 
 void printCurrentFollower() {

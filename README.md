@@ -37,13 +37,14 @@ Einstellungen im Wifi-Manager
 
 ## Tasterfunktionen (seit Version 1.3)
 
-* 1x Drücken => Follower anzeigen
-* 2x Drücken => WLAN Status anzeigen
-* 3x Drücken => Eigene IP anzeigen
-* 4x Drücken => Version anzeigen
-* 5x Drücken => Helligkeitsdemo
-* 6x Drücken => Neustarten (Reset)
+* 1x Drücken => Followermodus 
+* 2x Drücken => Uhrmodus
+* 3x Drücken => wechselmodus Uhr/Follower
+* 4x Drücken => InfoWLAN
+* 5x Drücken => Info IP
+* 6x Drücken => Version anzeigen
 * 7x Drücken => Firmware-Update via Internet
+* 8x Drücken => Neustarten (Reset)
 * 10x Drücken =>  Zurücksetzen aller Einstellungen - Neukonfiguration nötig
 
 ## Parts / Bauteile
