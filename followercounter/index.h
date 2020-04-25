@@ -55,6 +55,11 @@ const char MAIN_page[] PROGMEM = R"=====(
     <a href="/update">Update</a>
     <a href="/format">Zurücksetzen</a>
 
+
+    <a href="/mode1">Nur Counter</a>
+    <a href="/mode2">Nur Uhr</a>
+    <a href="/mode3">Uhr und Counter im Wechsel</a>
+
     <h3>Helligkeit</h3>
 
     <div class="buttongrid">

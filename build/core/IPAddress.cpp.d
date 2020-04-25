@@ -64,8 +64,8 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/Stream.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/md5.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/debug.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/pins_arduino.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/../generic/common.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/pins_arduino.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/../generic/common.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/IPAddress.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/Printable.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/tools/sdk/lwip2/include/lwip/init.h \

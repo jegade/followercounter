@@ -57,8 +57,8 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/uart.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/Esp.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/debug.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/pins_arduino.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/../generic/common.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/pins_arduino.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/../generic/common.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/flash_utils.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/../../bootloaders/eboot/flash.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/tools/sdk/include/spi_flash_geometry.h \

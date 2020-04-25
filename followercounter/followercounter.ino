@@ -20,8 +20,12 @@
 #include <NTPClient.h>
 #include <time.h>
 
+#include <Arduino.h>
+#include <U8g2lib.h>
+#include <SPI.h>
 
 
+U8G2_MAX7219_64X8_F_4W_SW_SPI u8g2(U8G2_R2, 12, 15, 13, U8X8_PIN_NONE);
 
 
 const long interval = 3000*1000;  // alle 60 Minuten prüfen
@@ -60,8 +64,7 @@ int lastButtonState = 1;     // previous state of the button
 
 #define TOGGLE_PIN 0 // D3
 
-#include "max7219.h"
-#include "fonts.h"
+
 #include "index.h"
 
 
@@ -95,7 +98,28 @@ void getIntensity() {
 
   Serial.println("Set Intensity " + server.arg("intensity"));
   String intensityString = server.arg("intensity");
-  sendCmdAll(CMD_INTENSITY,intensityString.toInt());
+  String matrixIntensityString = intensityString;
+  u8g2.setContrast(16*matrixIntensityString.toInt());
+  u8g2.refreshDisplay();
+
+  redirectBack();
+}
+
+void getMode1() {
+
+  mode = 1;
+  redirectBack();
+}
+
+void getMode2() {
+
+  mode = 2;
+  redirectBack();
+}
+
+void getMode3() {
+
+  mode = 3;
   redirectBack();
 }
 
@@ -178,13 +202,18 @@ void setup() {
   // Warte damit das Display initialisiert werden kannu
   delay(1000);
 
-  initMAX7219();
-  sendCmdAll(CMD_SHUTDOWN,1); 
+  u8g2.begin();
 
- configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+
+  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
   setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 0);  // https://github.com/nayarsystems/posix_tz_db 
    
-  printStringWithShift("     Config",5);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,8,"Config");
+  u8g2.sendBuffer();
+   
   
   Serial.print("Connecting WiFi ");
 
@@ -202,6 +231,9 @@ void setup() {
   server.on("/format", getFormat);
   server.on("/update", getUpdate);
   server.on("/reset", getReset);
+  server.on("/mode1", getMode1);
+  server.on("/mode2", getMode2);
+  server.on("/mode3", getMode3);
   server.begin();
 
   Serial.print("IP address: ");
@@ -215,7 +247,10 @@ void setup() {
   // modules = String(maxModules).toInt();
 
   String matrixIntensityString = matrixIntensity;
-  sendCmdAll(CMD_INTENSITY,matrixIntensityString.toInt());
+
+
+  u8g2.setContrast(16*matrixIntensityString.toInt());
+
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -232,45 +267,69 @@ void setup() {
 
     serializeJson(json, Serial);
     serializeJson(json, configFile);
-     configFile.close();
     //end save
   }
  
-  printStringWithShift("      Starte ",5);
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,8,"Starte");
+  u8g2.sendBuffer();
+  
+
 }
 
 
 void infoWlan() {
 
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+
   if (WiFi.status() ==  WL_CONNECTED ) {
 
     // WLAN Ok
-    printStringWithShift(" WIFI OK",5);
+    u8g2.drawStr(0,8,"WIFI OK");
 
   } else {
 
-    // Wlan Probleme
-    printStringWithShift(" WIFI ER",5);
+    u8g2.drawStr(0,8,"WIFI Error");
+
   }
+
+   u8g2.sendBuffer();
 }
 
 void infoIP() {
   String localIP = WiFi.localIP().toString();
-  printStringWithShift(localIP.c_str(),100);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,8,localIP.c_str());
+  u8g2.sendBuffer();
+
 }
 
 void infoVersion() {
+
   char versionString[8];
   sprintf(versionString,"Ver. %s", VERSION);
-  printStringWithShift(versionString,100);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,8,versionString);
+  u8g2.sendBuffer();
+
 }
 
 
 void infoReset() {
 
-     Serial.println("Format System");
-    printStringWithShift("    Format",5);
+    Serial.println("Format System");
     
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_finderskeepers_tf);
+    u8g2.drawStr(0,8,"Format");
+    u8g2.sendBuffer();
+
     // Reset Wifi-Setting
     WiFiManager wifiManager;
     wifiManager.resetSettings();
@@ -284,8 +343,11 @@ void infoReset() {
 }
 
 void restartX() {
-   
-    printStringWithShift("    Restarte ...",5);
+       
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_finderskeepers_tf);
+    u8g2.drawStr(0,7,"Restarte …");
+    u8g2.sendBuffer();
     ESP.reset();
 }
 
@@ -293,19 +355,33 @@ void showIntensity() {
   for (int intensity = 0; intensity < 16; intensity++) {
     char intensityString[8];
     sprintf(intensityString, " Int %d", intensity);
-    sendCmdAll(CMD_INTENSITY,intensity);
-    printStringWithShift( intensityString,50);
+
+    u8g2.setContrast(16*intensity);
+    
+    u8g2.clearBuffer();
+    u8g2.setFont(u8g2_font_finderskeepers_tf);
+    u8g2.drawStr(0,7,intensityString);
+    u8g2.sendBuffer();
   }
 }
 
 void update_started() {
 
-  printStringWithShift(" Update ...",50);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,"Update …");
+  u8g2.sendBuffer();
+
   USE_SERIAL.println("CALLBACK:  HTTP update process started");
 }
 
 void update_finished() {
-  printStringWithShift(" Done ...",50);
+  
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,"Done!");
+  u8g2.sendBuffer();
   USE_SERIAL.println("CALLBACK:  HTTP update process finished");
 }
 
@@ -313,14 +389,24 @@ void update_progress(int cur, int total) {
   char progressString[10];
   float percent = ((float)cur   / (float)total )  * 100;
   sprintf(progressString, " ... %s ",  String(percent).c_str()  );
-  printStringWithShift( progressString,10);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,progressString);
+  u8g2.sendBuffer();
+
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
 void update_error(int err) {
   char errorString[8];
   sprintf(errorString, "Err %d", err);
-  printStringWithShift( errorString,50);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,errorString);
+  u8g2.sendBuffer();
+
   USE_SERIAL.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
 }
 
@@ -378,9 +464,15 @@ void loop() {
       // if the current state is HIGH then the button went from off to on:
       buttonPushCounter++;
       lastPressed = currentMillis;
+
       Serial.println("push");
-      printStringWithShift(".",5);
+ 
+      u8g2.setFont(u8g2_font_finderskeepers_tf);
+      u8g2.drawPixel(31,0);
+      u8g2.sendBuffer();
+
       Serial.println(buttonPushCounter);
+
     } else {
       // if the current state is LOW then the button went from on to off:
       Serial.println("off");
@@ -438,7 +530,11 @@ void loop() {
 
                 default:
 
-                  printStringWithShift("TO MANY",5);
+                  u8g2.clearBuffer();
+                  u8g2.setFont(u8g2_font_finderskeepers_tf);
+                  u8g2.drawStr(0,7,"To Many");
+                  u8g2.sendBuffer();
+
                   break;
             }
 
@@ -515,152 +611,56 @@ void printTime() {
   time.trim();
   time.substring(11,16).toCharArray(time_value, 10); 
   
-  textsize = 0;
-  clr();
-  refreshAll();
 
-  //Serial.println(time_value);
-  printStringWithShift(time_value,5);
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(4,7,time_value);
+  u8g2.sendBuffer();
+
 }
 
 void printCurrentFollower() {
 
     String instacount = String(follower);
-    textsize = 0;
-    clr();
-    refreshAll();
-
-    if ( follower > 9999 ) {
-
-        String insta2 = instacount ;
-        printStringWithShift(insta2.c_str(),5);
-    
-    } else {
   
-      String insta2 = "$% " + instacount ;
-      printStringWithShift(insta2.c_str(),5);
-        for (int i=0; i<32-textsize; i++) {
+    char copy[50];
+    instacount.toCharArray(copy, 50);
+
+    if (follower > 0 ) {
+
+      if ( follower > 9999 ) {
+
+        u8g2.clearBuffer();
+        u8g2.setFont(u8g2_font_finderskeepers_tf);
+        u8g2.drawStr(1,7,copy);
+        u8g2.sendBuffer();
       
-            //Serial.print("i >> ");
-            //Serial.println(i);
-            //Serial.print("textsize insta >> ");
-            //Serial.println(textsize);
-            delay(10);
-            scrollLeft();
-            refreshAll();
+      } else {
     
-        }
+        u8g2.clearBuffer();
+
+
+        // Äußerer Rahmen Insta Logo
+        u8g2.drawHLine(1,0,6);
+        u8g2.drawHLine(1,7,6);
+
+        u8g2.drawLine(0,1,0,6);
+        u8g2.drawLine(7,1,7,6);
+
+        // Innererer Rahmen Insta Logo
+        u8g2.drawHLine(3,2,2);
+        u8g2.drawHLine(3,5,2);
+
+        u8g2.drawLine(2,3,2,4);
+        u8g2.drawLine(5,3,5,4);
+
+        u8g2.drawPixel(6,1);
+
+        // Anzahl Follower 
+        u8g2.setFont(u8g2_font_finderskeepers_tf);
+        u8g2.drawStr(10,7,copy);
+        u8g2.sendBuffer();
+
+      }
     }
-    
-    textsize = 0;
-}
-
-// =======================================================================
-
-int showChar(char ch, const uint8_t *data)
-{
-  int len = pgm_read_byte(data);
-  int i,w = pgm_read_byte(data + 1 + ch * len);
-  for (i = 0; i < w; i++)
-    scr[modules*8 + i] = pgm_read_byte(data + 1 + ch * len + 1 + i);
-  scr[modules*8 + i] = 0;
-  return w;
-}
-
-// =======================================================================
-int dualChar = 0;
-
-unsigned char convertPolish(unsigned char _c)
-{
-  unsigned char c = _c;
-  if(c==196 || c==197 || c==195) {
-    dualChar = c;
-    return 0;
-  }
-  if(dualChar) {
-    switch(_c) {
-      case 133: c = 1+'~'; break; // 'ą'
-      case 135: c = 2+'~'; break; // 'ć'
-      case 153: c = 3+'~'; break; // 'ę'
-      case 130: c = 4+'~'; break; // 'ł'
-      case 132: c = dualChar==197 ? 5+'~' : 10+'~'; break; // 'ń' and 'Ą'
-      case 179: c = 6+'~'; break; // 'ó'
-      case 155: c = 7+'~'; break; // 'ś'
-      case 186: c = 8+'~'; break; // 'ź'
-      case 188: c = 9+'~'; break; // 'ż'
-      //case 132: c = 10+'~'; break; // 'Ą'
-      case 134: c = 11+'~'; break; // 'Ć'
-      case 152: c = 12+'~'; break; // 'Ę'
-      case 129: c = 13+'~'; break; // 'Ł'
-      case 131: c = 14+'~'; break; // 'Ń'
-      case 147: c = 15+'~'; break; // 'Ó'
-      case 154: c = 16+'~'; break; // 'Ś'
-      case 185: c = 17+'~'; break; // 'Ź'
-      case 187: c = 18+'~'; break; // 'Ż'
-      default:  break;
-    }
-    dualChar = 0;
-    return c;
-  }    
-  switch(_c) {
-    case 185: c = 1+'~'; break;
-    case 230: c = 2+'~'; break;
-    case 234: c = 3+'~'; break;
-    case 179: c = 4+'~'; break;
-    case 241: c = 5+'~'; break;
-    case 243: c = 6+'~'; break;
-    case 156: c = 7+'~'; break;
-    case 159: c = 8+'~'; break;
-    case 191: c = 9+'~'; break;
-    case 165: c = 10+'~'; break;
-    case 198: c = 11+'~'; break;
-    case 202: c = 12+'~'; break;
-    case 163: c = 13+'~'; break;
-    case 209: c = 14+'~'; break;
-    case 211: c = 15+'~'; break;
-    case 140: c = 16+'~'; break;
-    case 143: c = 17+'~'; break;
-    case 175: c = 18+'~'; break;
-    default:  break;
-  }
-  return c;
-}
-
-// =======================================================================
-
-void printCharWithShift(unsigned char c, int shiftDelay) {
-  c = convertPolish(c);
-  if (c < ' ' || c > MAX_CHAR) return;
-  c -= 32;
-  int w = showChar(c, font);
-
-  // Insta-Char-Hack
-  int offset=1;
-  if (c == 4 || c == 5 ) {
-    offset = 0;
- }
-  
-  for (int i=0; i<w+offset; i++) {
-      
-    delay(shiftDelay);
-    scrollLeft();
-    textsize++;
-    refreshAll();
-  }
-}
-
-// =======================================================================
-
-void printStringWithShift(const char* s, int shiftDelay){
-  while (*s) {
-    printCharWithShift(*s++, shiftDelay);
-  }
-}
-
-unsigned int convToInt(const char *txt)
-{
-  unsigned int val = 0;
-  for(int i=0; i<strlen(txt); i++)
-    if(isdigit(txt[i])) val=val*10+(txt[i]&0xf);
-  return val;
 }

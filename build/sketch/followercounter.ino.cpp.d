@@ -49,8 +49,8 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/Stream.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/md5.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/debug.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/pins_arduino.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/../generic/common.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/pins_arduino.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/../generic/common.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WiFi/src/ESP8266WiFi.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WiFi/src/include/wl_definitions.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/IPAddress.h \
@@ -143,6 +143,12 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WebServer/src/detail/mimetable.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WebServer/src/Parsing-impl.h \
  /home/jens/Arduino/libraries/WiFiManager/WiFiManager.h \
- /home/jens/Dropbox/ESP8266/followercounter/build/sketch/max7219.h \
- /home/jens/Dropbox/ESP8266/followercounter/build/sketch/fonts.h \
+ /home/jens/Arduino/libraries/NTPClient/NTPClient.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/tools/sdk/libc/xtensa-lx106-elf/include/time.h \
+ /home/jens/Arduino/libraries/U8g2/src/U8g2lib.h \
+ /home/jens/Arduino/libraries/U8g2/src/U8x8lib.h \
+ /home/jens/Arduino/libraries/U8g2/src/clib/u8x8.h \
+ /home/jens/Arduino/libraries/U8g2/src/clib/u8g2.h \
+ /home/jens/Arduino/libraries/U8g2/src/clib/u8x8.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/SPI/SPI.h \
  /home/jens/Dropbox/ESP8266/followercounter/build/sketch/index.h

@@ -66,8 +66,8 @@
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/Stream.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/md5.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/debug.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/pins_arduino.h \
- /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1/../generic/common.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/pins_arduino.h \
+ /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/variants/d1_mini/../generic/common.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WiFi/src/ESP8266WiFi.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/ESP8266WiFi/src/include/wl_definitions.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/cores/esp8266/IPAddress.h \
