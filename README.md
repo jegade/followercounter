@@ -2,6 +2,10 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc3 
+
+  * Bei mehr als 9999 Follower wieder rechtsbündig ausrichten 
+
 ### 1.9rc2
   
   * Eigene Schriftart für die Zahlen, max 4x7 Punkte 
