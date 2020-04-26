@@ -667,12 +667,7 @@ void printCurrentFollower() {
         
         u8g2.clearBuffer();
         u8g2.setFont(DotMatrixCondensed);
-
-        Serial.println(u8g2.getStrWidth(copy));
         int rightAlign =  32 - u8g2.getStrWidth(copy);
-
-        Serial.println(rightAlign);
-
         u8g2.drawStr(rightAlign,8,copy);
         u8g2.sendBuffer();
       
