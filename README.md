@@ -2,6 +2,19 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc2
+  
+  * Eigene Schriftart für die Zahlen, max 4x7 Punkte 
+
+### 1.9rc1
+  
+  * Anzeige der Zeit (Internetzeit)
+  * Drei verschiedene Modi: 1. Nur Counter, 2. Nur Uhr, 3. Im Wechsel 
+  * Erweiterung der Weboberfläche um Moduswahl
+  * Erweiterung der Tastfunktion um Moduswahl
+  * Umstellung auf u8g2 für die Anzeige
+  * Wegfall des Scroll-In-Effekts
+
 ### 1.8 
 
   * Linksbündige Positionierung des Logos, damit man das Element austauschen kann (von @drkuebel)
@@ -24,6 +37,7 @@
    * Json Streaming Parser 
    * ArduinoJSON
    * WifiManager
+   * u8g2
 5. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
 6. Download der letzten Version unter Release 
 7. FollowerCounter.ino in Arduino öffnen
