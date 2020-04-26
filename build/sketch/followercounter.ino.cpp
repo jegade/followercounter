@@ -299,7 +299,7 @@ void setup() {
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,8,"Config");
+  u8g2.drawStr(0,7,"Config");
   u8g2.sendBuffer();
    
   
@@ -360,7 +360,7 @@ void setup() {
  
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,8,"Starte");
+  u8g2.drawStr(0,7,"Starte");
   u8g2.sendBuffer();
   
 
@@ -375,11 +375,11 @@ void infoWlan() {
   if (WiFi.status() ==  WL_CONNECTED ) {
 
     // WLAN Ok
-    u8g2.drawStr(0,8,"WIFI OK");
+    u8g2.drawStr(0,7,"WIFI OK");
 
   } else {
 
-    u8g2.drawStr(0,8,"WIFI Error");
+    u8g2.drawStr(0,7,"WIFI Error");
 
   }
 
@@ -391,7 +391,7 @@ void infoIP() {
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,8,localIP.c_str());
+  u8g2.drawStr(0,7,localIP.c_str());
   u8g2.sendBuffer();
 
 }
@@ -403,7 +403,7 @@ void infoVersion() {
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,8,versionString);
+  u8g2.drawStr(0,7,versionString);
   u8g2.sendBuffer();
 
 }
@@ -415,7 +415,7 @@ void infoReset() {
     
     u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_finderskeepers_tf);
-    u8g2.drawStr(0,8,"Format");
+    u8g2.drawStr(0,7,"Format");
     u8g2.sendBuffer();
 
     // Reset Wifi-Setting
@@ -620,7 +620,7 @@ void loop() {
 
                   u8g2.clearBuffer();
                   u8g2.setFont(u8g2_font_finderskeepers_tf);
-                  u8g2.drawStr(0,7,"To Many");
+                  u8g2.drawStr(0,8,"To Many");
                   u8g2.sendBuffer();
 
                   break;
@@ -702,7 +702,7 @@ void printTime() {
 
   u8g2.clearBuffer();
   u8g2.setFont(DotMatrixCondensed);
-  u8g2.drawStr(4,9,time_value);
+  u8g2.drawStr(6,8,time_value);
   u8g2.sendBuffer();
 
 }
@@ -711,16 +711,22 @@ void printCurrentFollower() {
 
     String instacount = String(follower);
   
-    char copy[50];
-    instacount.toCharArray(copy, 50);
+    char copy[instacount.length()+1];
+    instacount.toCharArray(copy, instacount.length()+1);
 
     if (follower > 0 ) {
 
       if ( follower > 9999 ) {
-
+        
         u8g2.clearBuffer();
         u8g2.setFont(DotMatrixCondensed);
-        u8g2.drawStr(1,9,copy);
+
+        Serial.println(u8g2.getStrWidth(copy));
+        int rightAlign =  32 - u8g2.getStrWidth(copy);
+
+        Serial.println(rightAlign);
+
+        u8g2.drawStr(rightAlign,8,copy);
         u8g2.sendBuffer();
       
       } else {
@@ -746,7 +752,7 @@ void printCurrentFollower() {
 
         // Anzahl Follower 
         u8g2.setFont(DotMatrixCondensed);
-        u8g2.drawStr(10,9,copy);
+        u8g2.drawStr(10,8,copy);
         u8g2.sendBuffer();
 
       }
