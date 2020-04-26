@@ -53,7 +53,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.9rc2"
+#define VERSION "1.9rc3"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
