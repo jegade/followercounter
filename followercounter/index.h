@@ -1,4 +1,5 @@
-const char MAIN_page[] PROGMEM = R"=====(
+
+const char _PAGE_HEAD[] PROGMEM = R"=====(
 <HTML>
 	<HEAD>
 			<TITLE>Follower Counter</TITLE>
@@ -9,6 +10,10 @@ const char MAIN_page[] PROGMEM = R"=====(
                 box-sizing: border-box;
                 }
 
+                html  {
+                    padding: 1em;
+                }
+
                 *, *::before, *::after {
                 margin: 0;
                 padding: 0;
@@ -16,29 +21,38 @@ const char MAIN_page[] PROGMEM = R"=====(
                 font-family: sans-serif;
                 }
 
-                
-                a { 
-                    display: inline-block; 
-                    padding: 4px 7px 3px 7px; 
-                    margin: 2px; 
-                    background: #2166de; 
-                    color: #fff; 
-                    text-decoration: none;
-                    line-height: 30px;
-                }
-                
-                h1 { font-size: 24px; margin: 5px;}
-                h3 { font-size: 18px; border-bottom: 1px solid #ddd; margin: 5px; }
-                .buttongrid  {
-                     display: grid;
-                    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+                label {
+                    display: block;
+                    font-size: 18px;
+                    border-bottom: 1px solid #eee; 
+                    padding: 5px 0;
+                    margin: 10px 0 0 0; 
                 }
 
-                .buttongrid a {
+                label.inline {
+
                     display: block;
-                    text-align: center;
-                    line-height: 30px;
+                    font-size: 13px;
+                    border-bottom: 0 none;
+                    padding: 2px 0;
+                    margin: 0;
                 }
+
+                button, a { 
+                    display: inline-block; 
+                    padding: 5px 12px 3px 12px; 
+                    margin: 2px; 
+                    background: #eee;
+                    color: #000;
+                    border: 0;
+                    text-decoration: none;
+                }
+                
+                h1 { font-size: 24px; margin: 5px 0;}
+               
+
+               
 
             
             </style>
@@ -46,42 +60,20 @@ const char MAIN_page[] PROGMEM = R"=====(
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 	</HEAD>
+
+
 <BODY>
-
-    <h1>Follower Counter</h1>
-	
-    <h3>Funktionen</h3>
-    <a href="/reset">Neustart</a>
-    <a href="/update">Update</a>
-    <a href="/format">Zurücksetzen</a>
-
-
-    <a href="/mode1">Nur Counter</a>
-    <a href="/mode2">Nur Uhr</a>
-    <a href="/mode3">Uhr und Counter im Wechsel</a>
-
-    <h3>Helligkeit</h3>
-
-    <div class="buttongrid">
-
-        <a href="/intensity?intensity=0">0</a> 
-        <a href="/intensity?intensity=1">1</a> 
-        <a href="/intensity?intensity=2">2</a> 
-        <a href="/intensity?intensity=3">3</a> 
-        <a href="/intensity?intensity=4">4</a> 
-        <a href="/intensity?intensity=5">5</a> 
-        <a href="/intensity?intensity=6">6</a> 
-        <a href="/intensity?intensity=7">7</a>
-        <a href="/intensity?intensity=8">8</a> 
-        <a href="/intensity?intensity=9">9</a> 
-        <a href="/intensity?intensity=10">10</a> 
-        <a href="/intensity?intensity=11">11</a> 
-        <a href="/intensity?intensity=12">12</a> 
-        <a href="/intensity?intensity=13">13</a> 
-        <a href="/intensity?intensity=14">14</a> 
-        <a href="/intensity?intensity=15">15</a> 
-    
-    </div>
-</BODY>
-</HTML>
 )=====";
+
+const char _PAGE_FOOTER[] PROGMEM = "<br />  <br /> <button type=submit>Config aktualisieren</button></form></BODY></HTML>";
+const char _PAGE_START[] PROGMEM  = "<h1>Follower Counter</h1><form method=get action=/config>";
+
+const char _PAGE_ACTIONS[] PROGMEM = "<label>Funktionen</label>    <a href='/reset'>Neustart</a>   <a href='/update'>Update</a> <a href='/format'>Zurücksetzen</a>";
+
+const char _PAGE_CONFIG_NAME[] PROGMEM  = "<label>Instagram-Name:</label> <input type=text name=instagramname value=%INSTAGRAM% >";
+const char _PAGE_CONFIG_MODE1[] PROGMEM  = "<label>Modus: </label> <label class=inline><input type=radio name=mode value=1 checked> Nur Counter</label> <label  class=inline><input type=radio name=mode value=2         > Nur Uhr</label> <label class=inline><input type=radio name=mode value=3> Counter und Uhr im Wechsel</label>" ;
+const char _PAGE_CONFIG_MODE2[] PROGMEM  = "<label>Modus: </label> <label class=inline><input type=radio name=mode value=1        > Nur Counter</label> <label  class=inline><input type=radio name=mode value=2 checked > Nur Uhr</label> <label class=inline><input type=radio name=mode value=3> Counter und Uhr im Wechsel</label>" ;
+const char _PAGE_CONFIG_MODE3[] PROGMEM  = "<label>Modus: </label> <label class=inline><input type=radio name=mode value=1        > Nur Counter</label> <label  class=inline><input type=radio name=mode value=2         > Nur Uhr</label> <label class=inline><input type=radio name=mode value=3 checked> Counter und Uhr im Wechsel</label>" ;
+
+const char _PAGE_CONFIG_INTENSITY[] PROGMEM  = "<label>Helligkeit</label> <input type=range min=0 max=15 name=intensity value=%INTENSITY% >" ;
+

@@ -71,6 +71,11 @@
   },
   {
     "Sourcefile": "/home/jens/Dropbox/ESP8266/followercounter/build/sketch/followercounter.ino.cpp",
+    "Include": "ESPStringTemplate.h",
+    "Includepath": "/home/jens/Arduino/libraries/ESPStringTemplate/src"
+  },
+  {
+    "Sourcefile": "/home/jens/Dropbox/ESP8266/followercounter/build/sketch/followercounter.ino.cpp",
     "Include": "",
     "Includepath": ""
   },
@@ -691,6 +696,11 @@
   },
   {
     "Sourcefile": "/home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/SPI/SPI.cpp",
+    "Include": "",
+    "Includepath": ""
+  },
+  {
+    "Sourcefile": "/home/jens/Arduino/libraries/ESPStringTemplate/src/ESPStringTemplate.cpp",
     "Include": "",
     "Includepath": ""
   },

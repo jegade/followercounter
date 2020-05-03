@@ -7,6 +7,7 @@
 #include "InstagramStats.h"        // InstagramStats              https://github.com/witnessmenow/arduino-instagram-stats
 #include "JsonStreamingParser.h"   // Json Streaming Parser  
 
+
 #include <ESP8266HTTPClient.h>     // Web Download
 #include <ESP8266httpUpdate.h>     // Web Updater
 
@@ -23,6 +24,13 @@
 #include <Arduino.h>
 #include <U8g2lib.h>
 #include <SPI.h>
+
+#include <ESPStringTemplate.h>
+
+#include "index.h"
+
+
+
 
 
 U8G2_MAX7219_64X8_F_4W_SW_SPI u8g2(U8G2_R2, 12, 15, 13, U8X8_PIN_NONE);
@@ -53,7 +61,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.9rc3"
+#define VERSION "1.9rc4"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -65,7 +73,6 @@ int lastButtonState = 1;     // previous state of the button
 #define TOGGLE_PIN 0 // D3
 
 
-#include "index.h"
 
 
 
@@ -107,6 +114,7 @@ const uint8_t DotMatrixCondensed[990] U8G2_FONT_SECTION("DotMatrixCondensed") =
 char instagramName[40];
 char matrixIntensity[5];
 char maxModules[5];
+char htmlBuffer[4096];
 
 // =======================================================================
 
@@ -120,7 +128,47 @@ void saveConfigCallback () {
 }
 
 void handleRoot() {
-  server.send(200, "text/html", MAIN_page);
+
+  ESPStringTemplate webpage(htmlBuffer, sizeof(htmlBuffer));
+  
+  TokenStringPair pair[1];
+  pair[0].setPair("%INSTAGRAM%", instagramName);
+
+  webpage.add_P(_PAGE_HEAD);
+  webpage.add_P(_PAGE_START);
+
+  webpage.add_P(_PAGE_ACTIONS);
+
+  webpage.add_P(_PAGE_CONFIG_NAME, pair,1);
+
+  switch (mode)
+      {
+      case 1:
+        webpage.add_P(_PAGE_CONFIG_MODE1);     break;
+      
+      case 2:
+        webpage.add_P(_PAGE_CONFIG_MODE2);       break;
+      
+      case 3:
+
+        webpage.add_P(_PAGE_CONFIG_MODE3);       break;
+
+        break;
+
+      default:
+              webpage.add_P(_PAGE_CONFIG_MODE1);     break;
+      }
+
+  TokenStringPair intensityPair[1]; 
+
+
+  intensityPair[0].setPair("%INTENSITY%",matrixIntensity );
+  webpage.add_P(_PAGE_CONFIG_INTENSITY, intensityPair, 1);
+  webpage.add_P(_PAGE_FOOTER);
+
+  server.send(200, "text/html", htmlBuffer);
+
+
 }
 
 void redirectBack() {
@@ -129,34 +177,32 @@ void redirectBack() {
 }
 
 
-void getIntensity() {
 
-  Serial.println("Set Intensity " + server.arg("intensity"));
+void getConfig() {
+
+
+  // instagramName
+  String instagramNameString = server.arg("instagramname");
+  instagramNameString.toCharArray(instagramName,40);
+
+  // mode
+  String modeString = server.arg("mode");
+  mode = modeString.toInt();
+
+  // Intensity
   String intensityString = server.arg("intensity");
   String matrixIntensityString = intensityString;
+  matrixIntensityString.toCharArray(matrixIntensity,40);
+
   u8g2.setContrast(16*matrixIntensityString.toInt());
   u8g2.refreshDisplay();
+  
+  saveConfig();
 
   redirectBack();
+
 }
-
-void getMode1() {
-
-  mode = 1;
-  redirectBack();
-}
-
-void getMode2() {
-
-  mode = 2;
-  redirectBack();
-}
-
-void getMode3() {
-
-  mode = 3;
-  redirectBack();
-}
+ 
 
 void getReset() {
   redirectBack();
@@ -182,7 +228,6 @@ void setup() {
   // Required for instagram api
   client.setInsecure();
 
-  Serial.println("mounting FS...");
 
   // Set Reset-Pin to Input Mode
   pinMode(TOGGLE_PIN, INPUT);
@@ -192,10 +237,9 @@ void setup() {
 
  
     
-    Serial.println("mounted file system");
     if (SPIFFS.exists("/config.json")) {
       //file exists, reading and loading
-      Serial.println("reading config file");
+     
       File configFile = SPIFFS.open("/config.json", "r");
       if (configFile) {
         Serial.println("opened config file");
@@ -208,10 +252,20 @@ void setup() {
         deserializeJson(json, buf.get());
         serializeJson(json,Serial);
        
-          Serial.println("\nparsed json");
-          strcpy(instagramName, json["instagramName"]);
-          strcpy(matrixIntensity, json["matrixIntensity"]);
-          strcpy(maxModules, json["maxModules"]);
+        strcpy(instagramName, json["instagramName"]);
+        strcpy(maxModules, json["maxModules"]);
+
+        JsonVariant jsonMatrixIntensity = json["matrixIntensity"];
+        if (!jsonMatrixIntensity.isNull()) {
+            strcpy(matrixIntensity, json["matrixIntensity"]);
+        } 
+                
+        JsonVariant jsonMode = json["mode"];
+        if (!jsonMode.isNull()) { 
+          mode = jsonMode.as<int>();
+        } else {
+
+        }
       }
     } else {
       
@@ -250,25 +304,20 @@ void setup() {
   u8g2.sendBuffer();
    
   
-  Serial.print("Connecting WiFi ");
 
   //set config save notify callback
   wifiManager.setSaveConfigCallback(saveConfigCallback);
 
-  Serial.println("Running WifiManager");
   
   wifiManager.autoConnect("FollowerCounter");
-  Serial.println("connected...yeey :)");
 
 
   server.on("/", handleRoot);
-  server.on("/intensity", getIntensity);
   server.on("/format", getFormat);
   server.on("/update", getUpdate);
   server.on("/reset", getReset);
-  server.on("/mode1", getMode1);
-  server.on("/mode2", getMode2);
-  server.on("/mode3", getMode3);
+  server.on("/config", getConfig);
+  
   server.begin();
 
   Serial.print("IP address: ");
@@ -289,19 +338,10 @@ void setup() {
 
   //save the custom parameters to FS
   if (shouldSaveConfig) {
-    Serial.println("saving config");
-    DynamicJsonDocument json(1024);
-    json["instagramName"] = instagramName;
-    json["matrixIntensity"] = matrixIntensity;
-    json["maxModules"] = maxModules;
-    
-    File configFile = SPIFFS.open("/config.json", "w");
-    if (!configFile) {
-      Serial.println("failed to open config file for writing");
-    }
 
-    serializeJson(json, Serial);
-    serializeJson(json, configFile);
+
+    saveConfig();
+
     //end save
   }
  
@@ -313,6 +353,26 @@ void setup() {
 
 }
 
+void saveConfig() {
+
+
+
+    DynamicJsonDocument json(1024);
+    
+    json["instagramName"] = instagramName;
+    json["matrixIntensity"] = matrixIntensity;
+    json["maxModules"] = maxModules;
+    json["mode"] = mode;
+    
+    File configFile = SPIFFS.open("/config.json", "w");
+    
+    if (!configFile) {
+      Serial.println("failed to open config file for writing");
+    }
+
+    serializeJson(json, Serial);
+    serializeJson(json, configFile);
+}
 
 void infoWlan() {
 
@@ -662,7 +722,6 @@ void printCurrentFollower() {
     instacount.toCharArray(copy, instacount.length()+1);
 
     if (follower > 0 ) {
-
       if ( follower > 9999 ) {
         
         u8g2.clearBuffer();

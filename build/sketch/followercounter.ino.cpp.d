@@ -151,4 +151,5 @@
  /home/jens/Arduino/libraries/U8g2/src/clib/u8g2.h \
  /home/jens/Arduino/libraries/U8g2/src/clib/u8x8.h \
  /home/jens/.arduino15/packages/esp8266/hardware/esp8266/2.6.3/libraries/SPI/SPI.h \
+ /home/jens/Arduino/libraries/ESPStringTemplate/src/ESPStringTemplate.h \
  /home/jens/Dropbox/ESP8266/followercounter/build/sketch/index.h

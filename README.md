@@ -2,6 +2,11 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc4
+    
+  * Neues Webinterface
+  * Permanente Speicherung der Helligkeit und des Modus bei Änderungen im Webinterface
+
 ### 1.9rc3 
 
   * Bei mehr als 9999 Follower wieder rechtsbündig ausrichten 
