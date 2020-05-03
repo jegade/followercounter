@@ -63,7 +63,7 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 int buttonState = 1;         // current state of the button
 int lastButtonState = 1;     // previous state of the button
 
-#define VERSION "1.9rc4"
+#define VERSION "1.9rc5"
 #define ROTATE 90
 #define USE_SERIAL Serial
 
@@ -532,7 +532,7 @@ void update_finished() {
 void update_progress(int cur, int total) {
   char progressString[10];
   float percent = ((float)cur   / (float)total )  * 100;
-  sprintf(progressString, " ... %s ",  String(percent).c_str()  );
+  sprintf(progressString, " %s",  String(percent).c_str()  );
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);

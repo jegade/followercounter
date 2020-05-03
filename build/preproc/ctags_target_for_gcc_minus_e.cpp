@@ -399,7 +399,7 @@ void infoIP() {
 void infoVersion() {
 
   char versionString[8];
-  sprintf(versionString,"Ver. %s", "1.9rc4");
+  sprintf(versionString,"Ver. %s", "1.9rc5");
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
@@ -476,7 +476,7 @@ void update_finished() {
 void update_progress(int cur, int total) {
   char progressString[10];
   float percent = ((float)cur / (float)total ) * 100;
-  sprintf(progressString, " ... %s ", String(percent).c_str() );
+  sprintf(progressString, " %s", String(percent).c_str() );
 
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);

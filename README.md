@@ -2,6 +2,10 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc5
+    
+  * Update-Status besser ausrichten
+
 ### 1.9rc4
     
   * Neues Webinterface
