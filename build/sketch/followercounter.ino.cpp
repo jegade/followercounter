@@ -166,9 +166,9 @@ void update_error(int err);
 void updateFirmware();
 #line 538 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void loop();
-#line 702 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 704 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printTime();
-#line 717 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 719 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printCurrentFollower();
 #line 125 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfigCallback () {
@@ -711,6 +711,8 @@ void loop() {
     
    
   }
+
+  
 
   if ( currentMillis % 10000 == 0  ) {
 

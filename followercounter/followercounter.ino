@@ -663,6 +663,8 @@ void loop() {
    
   }
 
+  
+
   if ( currentMillis % 10000 == 0  ) {
 
       switch (mode)
