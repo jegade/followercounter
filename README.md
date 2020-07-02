@@ -51,6 +51,8 @@
    * ArduinoJSON
    * WifiManager
    * u8g2
+   * NTPClient
+   * ESPStringTemplate
 5. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
 6. Download der letzten Version unter Release 
 7. FollowerCounter.ino in Arduino öffnen
