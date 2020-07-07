@@ -2,6 +2,11 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc6
+    
+  * Bessere IP Anzeige
+
+
 ### 1.9rc5
     
   * Update-Status besser ausrichten
