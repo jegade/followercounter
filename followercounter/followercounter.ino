@@ -401,6 +401,13 @@ void infoIP() {
   u8g2.drawStr(0,7,localIP.c_str());
   u8g2.sendBuffer();
 
+  delay(1000);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,localIP.substring(8).c_str());
+  u8g2.sendBuffer();
+
 }
 
 void infoVersion() {

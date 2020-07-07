@@ -146,29 +146,29 @@ void saveConfig();
 void infoWlan();
 #line 396 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoIP();
-#line 406 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 413 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoVersion();
-#line 419 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 426 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoReset();
-#line 440 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 447 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void restartX();
-#line 449 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 456 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void showIntensity();
-#line 463 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 470 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_started();
-#line 474 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 481 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_finished();
-#line 483 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 490 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_progress(int cur, int total);
-#line 496 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 503 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_error(int err);
-#line 508 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 515 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void updateFirmware();
-#line 538 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 545 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void loop();
-#line 704 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 711 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printTime();
-#line 719 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 726 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printCurrentFollower();
 #line 125 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfigCallback () {
@@ -448,6 +448,13 @@ void infoIP() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_finderskeepers_tf);
   u8g2.drawStr(0,7,localIP.c_str());
+  u8g2.sendBuffer();
+
+  delay(1000);
+
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_finderskeepers_tf);
+  u8g2.drawStr(0,7,localIP.substring(8).c_str());
   u8g2.sendBuffer();
 
 }
