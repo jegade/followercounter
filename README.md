@@ -56,6 +56,8 @@
    * ArduinoJSON
    * WifiManager
    * u8g2
+   * NTPClient
+   * ESPStringTemplate
 5. Auswahl des "Board WeMos D1 R1" unter Werkzeuge -> Board 
 6. Download der letzten Version unter Release 
 7. FollowerCounter.ino in Arduino öffnen
@@ -107,6 +109,14 @@ Alternative
 * [Set mit Breadboard, Leitungen und Tastern](https://amzn.to/2P5Xitb)
 
 ## Schaltplan // Schematic
+
+<img align="left" src="https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/counter-01.jpg" width="300">
+<img align="left" src="https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/counter-02.jpg" width="300">
+<img align="left" src="https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/counter-03.jpg" width="300">
+<img align="left" src="https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/counter-04.jpg" width="300">
+
+
+ 
 
 ![Schaltplan](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/schematic.png)
 ![Wiring](https://raw.githubusercontent.com/jegade/esp8266-insta-counter/master/Schaltung/wiring.png)
