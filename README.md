@@ -2,6 +2,10 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc7
+
+  * Im Schaltplan hat sich ein Fehler eingeschlichen: 5V und 3,3V waren vertauscht. Jetzt stimmt das wieder.
+
 ### 1.9rc6
     
   * Bessere IP Anzeige
