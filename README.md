@@ -2,6 +2,10 @@
 
 ## Letzte Änderungen / Changelog
 
+### 1.9rc7
+
+  * Im Schaltplan hat sich ein Fehler eingeschlichen: 5V und 3,3V waren vertauscht. Jetzt stimmt das wieder.
+
 ### 1.9rc6
     
   * Bessere IP Anzeige
@@ -99,14 +103,11 @@ Einstellungen im Wifi-Manager
 Links to amazon.de
 
 * [D1 Mini NodeMCU Clone](https://amzn.to/31fsvza)
-* [Mini Breadboard](https://amzn.to/2OiJpYl)
+* [Mini Breadboard](https://amzn.to/2OirTmG)
 * [Dot Matrix Display](https://amzn.to/2tlg5co)
-* [Leitungen / Wires](https://amzn.to/2OhZrSb)
+* [Leitungen / Wires](https://amzn.to/2OhV8pC)
 * [Taster-Set](https://amzn.to/2V1nUPH)
 
-Alternative
-
-* [Set mit Breadboard, Leitungen und Tastern](https://amzn.to/2P5Xitb)
 
 ## Schaltplan // Schematic
 
