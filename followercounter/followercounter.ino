@@ -219,6 +219,48 @@ void getFormat() {
   infoReset();
 }
 
+void clearBuffer() {
+
+    u8g2.clearBuffer();
+}
+
+
+void printString(int x, int y, String output, int font) {
+
+  u8g2.clearBuffer();
+
+  if (font == 1 ) {
+
+    u8g2.setFont(u8g2_font_finderskeepers_tf);
+  
+  } else{
+
+    u8g2.setFont(DotMatrixCondensed);
+
+  }
+  
+  u8g2.drawStr(x,y, output.c_str());
+  u8g2.sendBuffer();
+}
+
+void printPixel(int x, int y) {
+
+    u8g2.drawPixel(31,0);
+    u8g2.sendBuffer();
+}
+
+
+void printHline(int a, int b, int c) {
+  u8g2.drawHLine(a,b,c);
+}
+void printVline(int a, int b, int c, int d) {
+  u8g2.drawLine(a,b,c,d);
+}
+
+
+
+
+
 
 void setup() {
 
@@ -281,7 +323,8 @@ void setup() {
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
   WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 0-15", matrixIntensity, 5);
   WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
-  
+  WifiManagerParameter custom_type("Modl")
+
   // Add params to wifiManager
   wifiManager.addParameter(&custom_instagram);
   wifiManager.addParameter(&custom_intensity);
@@ -297,12 +340,7 @@ void setup() {
   configTime(0, 0, "pool.ntp.org", "time.nist.gov");
   setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 0);  // https://github.com/nayarsystems/posix_tz_db 
    
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,"Config");
-  u8g2.sendBuffer();
-   
+  printString(0,7,"Config", 1);
   
 
   //set config save notify callback
@@ -319,7 +357,7 @@ void setup() {
   server.on("/config", getConfig);
   
   server.begin();
-
+ 
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
@@ -345,11 +383,7 @@ void setup() {
     //end save
   }
  
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,"Starte");
-  u8g2.sendBuffer();
-  
+  printString(0,7,"Starte",1);
 
 }
 
@@ -376,50 +410,32 @@ void saveConfig() {
 
 void infoWlan() {
 
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-
   if (WiFi.status() ==  WL_CONNECTED ) {
 
     // WLAN Ok
-    u8g2.drawStr(0,7,"WIFI OK");
+    printString(0,7,"WIFI OK",1);
 
   } else {
 
-    u8g2.drawStr(0,7,"WIFI Error");
+    // WLAN Error
+    printString(0,7,"WIFI Error",1);
 
   }
-
-   u8g2.sendBuffer();
 }
 
 void infoIP() {
   String localIP = WiFi.localIP().toString();
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,localIP.c_str());
-  u8g2.sendBuffer();
-
+  
+  printString(0,7,localIP,1);
   delay(1000);
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,localIP.substring(8).c_str());
-  u8g2.sendBuffer();
-
+  printString(0,7,localIP.substring(8),1);
 }
 
 void infoVersion() {
 
   char versionString[8];
   sprintf(versionString,"Ver. %s", VERSION);
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,versionString);
-  u8g2.sendBuffer();
-
+  printString(0,7,versionString ,1);
 }
 
 
@@ -427,10 +443,7 @@ void infoReset() {
 
     Serial.println("Format System");
     
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_finderskeepers_tf);
-    u8g2.drawStr(0,7,"Format");
-    u8g2.sendBuffer();
+    printString(0,7,"Format",1);
 
     // Reset Wifi-Setting
     WiFiManager wifiManager;
@@ -446,14 +459,12 @@ void infoReset() {
 
 void restartX() {
        
-    u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_finderskeepers_tf);
-    u8g2.drawStr(0,7,"Restarte …");
-    u8g2.sendBuffer();
-    ESP.reset();
+  printString(0,7,"Restarte…",1);
+  ESP.reset();
 }
 
 void showIntensity() {
+  
   for (int intensity = 0; intensity < 16; intensity++) {
     char intensityString[8];
     sprintf(intensityString, " Int %d", intensity);
@@ -469,21 +480,13 @@ void showIntensity() {
 
 void update_started() {
 
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,"Update …");
-  u8g2.sendBuffer();
-
+  printString(0,7,"Update …",1);
   USE_SERIAL.println("CALLBACK:  HTTP update process started");
 }
 
 void update_finished() {
   
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,"Done!");
-  u8g2.sendBuffer();
+  printString(0,7,"Done",1);
   USE_SERIAL.println("CALLBACK:  HTTP update process finished");
 }
 
@@ -491,24 +494,14 @@ void update_progress(int cur, int total) {
   char progressString[10];
   float percent = ((float)cur   / (float)total )  * 100;
   sprintf(progressString, " %s",  String(percent).c_str()  );
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,progressString);
-  u8g2.sendBuffer();
-
+  printString(0,7,progressString,1);
   USE_SERIAL.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
 }
 
 void update_error(int err) {
   char errorString[8];
   sprintf(errorString, "Err %d", err);
-
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_finderskeepers_tf);
-  u8g2.drawStr(0,7,errorString);
-  u8g2.sendBuffer();
-
+  printString(0,7,errorString,1);
   USE_SERIAL.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
 }
 
@@ -569,10 +562,10 @@ void loop() {
 
       Serial.println("push");
  
-      u8g2.setFont(u8g2_font_finderskeepers_tf);
-      u8g2.drawPixel(31,0);
-      u8g2.sendBuffer();
 
+      printPixel(31,0);
+
+      
       Serial.println(buttonPushCounter);
 
     } else {
@@ -632,11 +625,7 @@ void loop() {
 
                 default:
 
-                  u8g2.clearBuffer();
-                  u8g2.setFont(u8g2_font_finderskeepers_tf);
-                  u8g2.drawStr(0,8,"To Many");
-                  u8g2.sendBuffer();
-
+                  printString(0,7,"Too many",1);
                   break;
             }
 
@@ -714,13 +703,8 @@ void printTime() {
   String time = String(ctime(&now));
   time.trim();
   time.substring(11,16).toCharArray(time_value, 10); 
-  
 
-  u8g2.clearBuffer();
-  u8g2.setFont(DotMatrixCondensed);
-  u8g2.drawStr(6,8,time_value);
-  u8g2.sendBuffer();
-
+  printString(6,8, time_value,2);
 }
 
 void printCurrentFollower() {
@@ -731,40 +715,40 @@ void printCurrentFollower() {
     instacount.toCharArray(copy, instacount.length()+1);
 
     if (follower > 0 ) {
-      if ( follower > 9999 ) {
-        
-        u8g2.clearBuffer();
-        u8g2.setFont(DotMatrixCondensed);
-        int rightAlign =  32 - u8g2.getStrWidth(copy);
-        u8g2.drawStr(rightAlign,8,copy);
-        u8g2.sendBuffer();
-      
-      } else {
-    
-        u8g2.clearBuffer();
 
+      int modules = String(maxModules).toInt();
+
+      if ( follower > 9999 && modules < 5  ) {
+        
+        clearBuffer();
+
+        int rightAlign =  32 - u8g2.getStrWidth(copy);
+        printString(rightAlign,9, copy, 2);
+
+      } else {
+
+        clearBuffer();
+
+        printHline(1,0,6);
 
         // Äußerer Rahmen Insta Logo
-        u8g2.drawHLine(1,0,6);
-        u8g2.drawHLine(1,7,6);
+        printHline(1,0,6);
+        printHline(1,7,6);
 
-        u8g2.drawLine(0,1,0,6);
-        u8g2.drawLine(7,1,7,6);
+        printVline(0,1,0,6);
+        printVline(7,1,7,6);
 
         // Innererer Rahmen Insta Logo
-        u8g2.drawHLine(3,2,2);
-        u8g2.drawHLine(3,5,2);
+        printHline(3,2,2);
+        printHline(3,5,2);
 
-        u8g2.drawLine(2,3,2,4);
-        u8g2.drawLine(5,3,5,4);
+        printVline(2,3,2,4);
+        printVline(5,3,5,4);
 
-        u8g2.drawPixel(6,1);
+        printPixel(6,1);
 
-        // Anzahl Follower 
-        u8g2.setFont(DotMatrixCondensed);
-        u8g2.drawStr(10,8,copy);
-        u8g2.sendBuffer();
-
+        printString(10,8,copy,2);
+        
       }
     }
 }
