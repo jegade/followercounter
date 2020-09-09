@@ -316,6 +316,7 @@ void setup() {
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
   WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 0-15", matrixIntensity, 5);
   WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
+  WifiManagerParameter custom_type("Modl")
 
   // Add params to wifiManager
   wifiManager.addParameter(&custom_instagram);
@@ -710,8 +711,7 @@ void printCurrentFollower() {
 
       int modules = String(maxModules).toInt();
 
-
-      if ( follower > 9999 && modules < 4 ) {
+      if ( follower > 9999 && modules < 5 ) {
 
         clearBuffer();
 
