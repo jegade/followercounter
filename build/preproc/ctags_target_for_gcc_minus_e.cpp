@@ -220,7 +220,7 @@ void clearBuffer() {
 
 void printString(int x, int y, String output, int font) {
 
-  u8g2.clearBuffer();
+  clearBuffer();
 
   if (font == 1 ) {
 
@@ -238,7 +238,7 @@ void printString(int x, int y, String output, int font) {
 
 void printPixel(int x, int y) {
 
-    u8g2.drawPixel(31,0);
+    u8g2.drawPixel(x,y);
     u8g2.sendBuffer();
 }
 
@@ -316,7 +316,6 @@ void setup() {
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
   WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 0-15", matrixIntensity, 5);
   WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
-  WifiManagerParameter custom_type("Modl")
 
   // Add params to wifiManager
   wifiManager.addParameter(&custom_instagram);
@@ -711,7 +710,7 @@ void printCurrentFollower() {
 
       int modules = String(maxModules).toInt();
 
-      if ( follower > 9999 && modules < 5 ) {
+      if ( follower > 9999 ) {
 
         clearBuffer();
 
@@ -720,7 +719,7 @@ void printCurrentFollower() {
 
       } else {
 
-        clearBuffer();
+        printString(10,8,copy,2);
 
         printHline(1,0,6);
 
@@ -740,7 +739,6 @@ void printCurrentFollower() {
 
         printPixel(6,1);
 
-        printString(10,8,copy,2);
 
       }
     }

@@ -150,35 +150,35 @@ void printHline(int a, int b, int c);
 void printVline(int a, int b, int c, int d);
 #line 265 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void setup();
-#line 390 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 389 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfig();
-#line 411 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 410 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoWlan();
-#line 426 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 425 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoIP();
-#line 434 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 433 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoVersion();
-#line 442 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 441 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void infoReset();
-#line 460 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 459 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void restartX();
-#line 466 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 465 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void showIntensity();
-#line 481 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 480 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_started();
-#line 487 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 486 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_finished();
-#line 493 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 492 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_progress(int cur, int total);
-#line 501 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 500 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void update_error(int err);
-#line 508 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 507 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void updateFirmware();
-#line 538 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 537 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void loop();
-#line 700 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 699 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printTime();
-#line 710 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
+#line 709 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void printCurrentFollower();
 #line 125 "/home/jens/Dropbox/ESP8266/followercounter/followercounter/followercounter.ino"
 void saveConfigCallback () {
@@ -286,7 +286,7 @@ void clearBuffer() {
 
 void printString(int x, int y, String output, int font) {
 
-  u8g2.clearBuffer();
+  clearBuffer();
 
   if (font == 1 ) {
 
@@ -304,7 +304,7 @@ void printString(int x, int y, String output, int font) {
 
 void printPixel(int x, int y) {
 
-    u8g2.drawPixel(31,0);
+    u8g2.drawPixel(x,y);
     u8g2.sendBuffer();
 }
 
@@ -382,7 +382,6 @@ void setup() {
   WiFiManagerParameter custom_instagram("Instagram", "Instagram", instagramName, 40);
   WiFiManagerParameter custom_intensity("Helligkeit", "Helligkeit 0-15", matrixIntensity, 5);
   WiFiManagerParameter custom_modules("Elemente", "Anzahl Elemente 4-8", maxModules, 5);
-  WifiManagerParameter custom_type("Modl")
 
   // Add params to wifiManager
   wifiManager.addParameter(&custom_instagram);
@@ -777,7 +776,7 @@ void printCurrentFollower() {
 
       int modules = String(maxModules).toInt();
 
-      if ( follower > 9999 && modules < 5  ) {
+      if ( follower > 9999  ) {
         
         clearBuffer();
 
@@ -786,7 +785,7 @@ void printCurrentFollower() {
 
       } else {
 
-        clearBuffer();
+        printString(10,8,copy,2);
 
         printHline(1,0,6);
 
@@ -806,7 +805,6 @@ void printCurrentFollower() {
 
         printPixel(6,1);
 
-        printString(10,8,copy,2);
         
       }
     }
