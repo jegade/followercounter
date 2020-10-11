@@ -58,7 +58,7 @@
    * InstagramStats
    * Json Streaming Parser 
    * ArduinoJSON
-   * WifiManager
+   * WifiManager (tzapu)
    * u8g2
    * NTPClient
    * ESPStringTemplate
