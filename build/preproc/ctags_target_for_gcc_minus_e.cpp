@@ -33,9 +33,9 @@
 
 
 
+U8G2_SSD1306_128X32_UNIVISION_F_SW_I2C u8g2((&u8g2_cb_r2), 13, 12);
 
-
-U8G2_MAX7219_64X8_F_4W_SW_SPI u8g2((&u8g2_cb_r2), 12, 15, 13, 255);
+// U8G2_MAX7219_64X8_F_4W_SW_SPI u8g2(U8G2_R2, 12, 15, 13, U8X8_PIN_NONE);
 
 
 const long interval = 3000*1000; // alle 60 Minuten prüfen
@@ -224,15 +224,15 @@ void printString(int x, int y, String output, int font) {
 
   if (font == 1 ) {
 
-    u8g2.setFont(u8g2_font_finderskeepers_tf);
+    u8g2.setFont(u8g2_font_inb19_mr);
 
   } else{
 
-    u8g2.setFont(DotMatrixCondensed);
+    u8g2.setFont(u8g2_font_inb19_mr);
 
   }
 
-  u8g2.drawStr(x,y, output.c_str());
+  u8g2.drawStr(x,y+20, output.c_str());
   u8g2.sendBuffer();
 }
 

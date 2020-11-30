@@ -1,5 +1,5 @@
 {
-    "port": "/dev/ttyUSB0",
+    "port": "/dev/ttyUSB15",
     "programmer": "AVRISP mkII",
     "board": "esp8266:esp8266:d1_mini",
     "sketch": "followercounter/followercounter.ino",
